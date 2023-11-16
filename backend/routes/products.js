@@ -7,4 +7,10 @@ router.get('/', async (req, res) => {
     res.send(productItem)
 })
 
+router.post('/addProducts', async (req, res) => {
+    const newProduct = new products (req.body)
+    console.log(newProduct)
+    // newProduct.save()
+})
+
 module.exports = router;
