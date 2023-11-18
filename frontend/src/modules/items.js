@@ -1,7 +1,12 @@
 import { reactive } from "vue";
 
-export const items = reactive ({
+export const items = reactive({
 
-    items:[],
+    items: [],
+    products: [],
+
+    mounted() {
+        this.getAllProducts();
+    },
 
 })

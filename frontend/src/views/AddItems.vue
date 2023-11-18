@@ -1,6 +1,6 @@
 <template>
+  
   <h1>Add product listing</h1>
-
   <form>
     <label for="name"> Name : </label>
     <input type="text" v-model="newName" /> <br />
@@ -34,16 +34,18 @@
     <input type="checkbox" v-model="inStock" /> <br />
     <br />
 
-    <button @click="addItems">Submit</button>
+    <button @click.prevent="addItems">Submit</button>
   </form>
 </template>
 
 <script>
 import axios from "axios";
+import { items } from "../modules/items";
 
 export default {
   data() {
     return {
+      items,
       newName: "",
       newBrand: "",
       newDescription: "",

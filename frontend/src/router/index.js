@@ -3,6 +3,7 @@ import HomeView from '../views/HomeView.vue'
 import AddListingView from '../views/AddItems.vue'
 import ShowProducts from '../views/ShowItems.vue'
 import getProduct from '../views/ProductView.vue'
+import editProduct from '../views/EditItem.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -39,6 +40,14 @@ const router = createRouter({
       name: 'addProducts',
       component: AddListingView
     },
+
+    // Edit products route
+
+    {
+      path: '/products/editProduct/:id',
+      name: 'editProduct',
+      component: editProduct
+    }
 
   ]
 })

@@ -29,11 +29,12 @@ router.post('/addProducts', async (req, res) => {
 
 // Edit product
 
-router.put('/editProduct/:id', async (req, res) => {
-    const editProduct = await products.updateOne(
+router.put('/editProducts/:id', async (req, res) => {
+    const editProduct = await products.findByIdAndUpdate(
+        { _id: req.params.id },
         { $set: req.body }
     )
-    res.send(editProduct);
+    console.log(editProduct)
 })
 
 // Delete product

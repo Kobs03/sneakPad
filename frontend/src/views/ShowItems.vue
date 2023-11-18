@@ -2,7 +2,7 @@
   <h1>All Products:</h1>
   <hr />
   <br />
-  <div v-for="(item, key) in items" :key="key">
+  <div v-for="(item, key) in items.products" :key="key">
     <div class="card">
       Product Id: {{ item._id }} <br />
       Name:<router-link :to="`/products/${item._id}`">{{
@@ -15,7 +15,10 @@
       Price: {{ item.productPrice }} <br />
       In Stock: {{ item.productStocks }} <br />
       <br />
-      <button>Edit</button> &nbsp;
+      <router-link :to="`/products/editProduct/${item._id}`">
+        <button>Edit</button>
+      </router-link>
+      &nbsp;
       <button>Delete</button>
     </div>
     <hr />
@@ -24,31 +27,32 @@
 </template>
 
 <script>
-import axios from "axios";
+// import axios from "axios";
+import { items } from "../modules/items";
 
 export default {
   data() {
     return {
-      items:[]
+      items,
+      // productItems:[],
     };
   },
 
-  methods: {
+  // methods: {
+  //   async getAllProducts() {
+  //     //using axios
+  //     try {
+  //       const items = await axios.get("http://localhost:8080/products");
+  //       this.items.products = items.data;
+  //       this.productItems = this.items.products
+  //     } catch (error) {
+  //       console.log(error);
+  //     }
+  //   },
+  // },
 
-    async getAllProducts() {
-      //using axios
-      try {
-        const items = await axios.get("http://localhost:8080/products");
-        this.items = items.data;
-      } catch (error) {
-        console.log(error);
-      }
-    },
-    
-  },
-
-  mounted() {
-    this.getAllProducts();
-  },
+  // mounted() {
+  //   this.getAllProducts();
+  // },
 };
 </script>
