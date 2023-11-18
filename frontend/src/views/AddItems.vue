@@ -34,7 +34,7 @@
     <input type="checkbox" v-model="inStock" /> <br />
     <br />
 
-    <button @click.prevent="addItems">Submit</button>
+    <button @click="addItems">Submit</button>
   </form>
 </template>
 

@@ -47,7 +47,7 @@ const router = createRouter({
       path: '/products/editProduct/:id',
       name: 'editProduct',
       component: editProduct
-    }
+    },
 
   ]
 })

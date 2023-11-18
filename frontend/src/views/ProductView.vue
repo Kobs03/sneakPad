@@ -34,7 +34,7 @@ export default {
         const singleItem = await axios.get(
           `http://localhost:8080/products/` + this.productId
         );
-
+        console.log(singleItem);
         this.itemDetails = singleItem.data;
       } catch (error) {
         console.error(error);

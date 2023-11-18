@@ -39,4 +39,10 @@ router.put('/editProducts/:id', async (req, res) => {
 
 // Delete product
 
+router.delete('/delete/:id', async(req, res) => {
+    await products.findByIdAndDelete(
+        { _id: req.params.id },
+    )
+})
+
 module.exports = router;

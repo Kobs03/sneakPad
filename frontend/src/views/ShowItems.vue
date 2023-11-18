@@ -1,4 +1,5 @@
 <template>
+
   <h1>All Products:</h1>
   <hr />
   <br />
@@ -19,7 +20,7 @@
         <button>Edit</button>
       </router-link>
       &nbsp;
-      <button>Delete</button>
+      <button @click="deleteProduct(item._id)">Delete</button>
     </div>
     <hr />
     <br />
@@ -27,32 +28,20 @@
 </template>
 
 <script>
-// import axios from "axios";
+import axios from "axios";
 import { items } from "../modules/items";
 
 export default {
   data() {
     return {
       items,
-      // productItems:[],
     };
   },
 
-  // methods: {
-  //   async getAllProducts() {
-  //     //using axios
-  //     try {
-  //       const items = await axios.get("http://localhost:8080/products");
-  //       this.items.products = items.data;
-  //       this.productItems = this.items.products
-  //     } catch (error) {
-  //       console.log(error);
-  //     }
-  //   },
-  // },
-
-  // mounted() {
-  //   this.getAllProducts();
-  // },
+  methods: {
+    async deleteProduct(id) {
+      await axios.delete(`http://localhost:8080/products/delete/${id}`);
+    },
+  },
 };
 </script>
