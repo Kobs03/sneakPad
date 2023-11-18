@@ -1,7 +1,5 @@
 <template>
-  
   <h1>Add product listing</h1>
-  <form>
     <label for="name"> Name : </label>
     <input type="text" v-model="newName" /> <br />
     <br />
@@ -35,7 +33,6 @@
     <br />
 
     <button @click="addItems">Submit</button>
-  </form>
 </template>
 
 <script>
@@ -58,8 +55,12 @@ export default {
   methods: {
     // add product items on database
 
-    async addItems() {
-      this.items = await axios.post(
+    redirect() {
+      this.$router.push("/");
+    },
+
+     addItems () {
+      this.items = axios.post(
         "http://localhost:8080/products/addproducts",
         {
           productName: this.newName,
@@ -69,8 +70,10 @@ export default {
           productPrice: this.newPrice,
           productStocks: this.inStock,
         }
-      );
+      )
+      this.$router.push('/products').then(()=> this.$router.go())
     },
+
   },
 };
 </script>

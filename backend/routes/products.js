@@ -21,7 +21,7 @@ router.get('/:id', async (req, res) => {
 
 // Add new product
 
-router.post('/addProducts', async (req, res) => {
+router.post('/addProducts', async (req, res ) => {
     const newProduct = new products(req.body)
     console.log(newProduct)
     newProduct.save()

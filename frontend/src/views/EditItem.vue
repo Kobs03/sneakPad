@@ -69,8 +69,8 @@ export default {
       );
     },
 
-    async editItem() {
-      this.items = await axios.put(
+     editItem() {
+      this.items =  axios.put(
         `http://localhost:8080/products/editProducts/${this.productId}`,
         {
           productName: this.editProduct.productName,
@@ -80,7 +80,8 @@ export default {
           productPrice: this.editProduct.productPrice,
           productStocks: this.editProduct.productStocks,
         }
-      );
+      )
+      this.$router.push('/products')
     },
   },
 

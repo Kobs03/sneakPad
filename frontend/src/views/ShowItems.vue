@@ -1,5 +1,4 @@
 <template>
-
   <h1>All Products:</h1>
   <hr />
   <br />
@@ -39,9 +38,12 @@ export default {
   },
 
   methods: {
-    async deleteProduct(id) {
-      await axios.delete(`http://localhost:8080/products/delete/${id}`);
+
+    deleteProduct(id) {
+      axios.delete(`http://localhost:8080/products/delete/${id}`)
+      this.$router.push('/products').then(()=>{this.$router.go()})
     },
   },
+
 };
 </script>
