@@ -1,6 +1,6 @@
 <template>
 
-  <h1>hello home</h1>
+  <h1>Welcome to Sneak Pad !!</h1>
     
 </template>
 
