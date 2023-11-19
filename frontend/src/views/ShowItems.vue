@@ -38,12 +38,16 @@ export default {
   },
 
   methods: {
-
     deleteProduct(id) {
-      axios.delete(`http://localhost:8080/products/delete/${id}`)
-      this.$router.push('/products').then(()=>{this.$router.go()})
+      try {
+        axios.delete(`http://localhost:8080/products/delete/${id}`);
+        this.$router.push("/products").then(() => {
+          this.$router.go();
+        });
+      } catch (error) {
+        console.log(error);
+      }
     },
   },
-
 };
 </script>

@@ -1,0 +1,27 @@
+[
+    {
+        "id": "0123",
+        "name":"chubibas",
+        "type":"shoes",
+        "category":"mens",
+        "Size": "12",
+        "Stocks": "5"
+    },
+
+    // data model
+
+    {
+        "id": "0123",
+        "name":"chubibas",
+        "type":"shoes",
+        "category":"mens",
+        "sizes": [
+            {
+                "8":"",
+                "12":"",
+                "15":""
+            }
+        ]
+    }
+
+]
