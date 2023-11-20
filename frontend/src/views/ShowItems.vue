@@ -13,7 +13,7 @@
       Description: {{ item.productDescription }} <br />
       Category: {{ item.productCategory }} <br />
       Price: {{ item.productPrice }} <br />
-      In Stock: {{ item.productStocks }} <br />
+      Sizes: {{ item.sizes }} <br />
       <br />
       <router-link :to="`/products/editProduct/${item._id}`">
         <button>Edit</button>

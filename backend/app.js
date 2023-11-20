@@ -12,7 +12,7 @@ let port = process.env.PROD_PORT
 
 const dbConnect = async () => {
     try {
-        await mongoose.connect(mongo_uri);
+        await mongoose.connect('mongodb://127.0.0.1:27017/sneakPad');
         console.log('Connected to MongoDB')
     } catch (error) {
         console.error(error);
@@ -38,7 +38,7 @@ app.use(bodyParser.json());
 
 //routes 
 
-// Homepage route
+// Default route
 
 app.get('/' , async ( req, res) => {
     res.send("Hello World")

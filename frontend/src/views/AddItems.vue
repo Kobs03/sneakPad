@@ -33,14 +33,36 @@
     <br />
     <br />
 
+    <label for="user-category"> User-Category : </label>
+    <select id="user-category" v-model="newUserCategory" required>
+      <option value="none" selected disabled>Choose user-category</option>
+      <option value="Mens">Mens</option>
+      <option value="Womens">Womens</option>
+      <option value="Kids">Kids</option>
+      <option value="Unisex">Unisex</option>
+    </select>
+    <br />
+    <br />
+
+    <div v-if="newUserCategory == 'Mens'">
+      <hr />
+      <label for="sizes"> Sizes : </label> <br /><br />
+      <label for="small"> Small : </label>
+      <input type="number" id="small" v-model="sizes.small" />
+      <br /><br />
+      <label for="medium"> Medium : </label>
+      <input type="number" id="medium" v-model="sizes.medium" />
+      <br /><br />
+      <label for="small"> Large : </label>
+      <input type="large" id="large" v-model="sizes.large" />
+      <hr />
+      <br /><br />
+    </div>
+
     <label for="price"> Price : </label>
     <input type="number" id="price" v-model="newPrice" required /> <br />
     <br />
 
-    <label for="stocks"> Stock : </label>
-    <input type="number" id="stocks" v-model="stocksCount" required /> <br />
-    <br />
-    
     <button type="submit" @click="addItems">Submit</button>
   </form>
 </template>
@@ -57,8 +79,14 @@ export default {
       newBrand: "",
       newDescription: "",
       newCategory: "",
+      newUserCategory: "",
       newPrice: null,
       stocksCount: null,
+      sizes: {
+        small: null,
+        medium: null,
+        large: null,
+      },
     };
   },
 
@@ -67,21 +95,29 @@ export default {
 
     async addItems() {
       try {
+        const newProducts = {
+          productName: this.newName,
+          productBrand: this.newBrand,
+          productDescription: this.newDescription,
+          productPrice: this.newPrice,
+          userCategory: this.newUserCategory,
+          productCategory: this.newCategory,
+          sizes: {
+            small: this.sizes.small,
+            medium: this.sizes.medium,
+            large: this.sizes.large,
+          },
+        };
+
         this.items.products = await axios.post(
           "http://localhost:8080/products/addproducts",
-          {
-            productName: this.newName,
-            productBrand: this.newBrand,
-            productDescription: this.newDescription,
-            productCategory: this.newCategory,
-            productPrice: this.newPrice,
-            productStocks: this.stocksCount,
-          }
+          newProducts
         );
+
         this.$router.push("/products");
         this.$router.go();
       } catch (error) {
-        console.log(error)
+        console.log(error);
       }
     },
   },
