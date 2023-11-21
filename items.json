@@ -5,145 +5,184 @@
         "brand": "string",
         "description": "string",
         "price": "int",
-        "category": [
+        "shoes": [
             {
-                "shoes": [
-                    {
-                        "mens": {
-
-                            // Another nest if size varies depend on sizes
-                            "US_6":{
-                                "stocks":"null",
-                                "price":"null"
-                            },
-
-                            // if all sizes for user_category is the same price
-
-                            "US_6.5": "null",
-                            "US_7": "null",
-                            "US_7.5": "null",
-                            "US_8": "null",
-                            "US_8.5": "null",
-                            "US_9": "null",
-                            "US_9.5": "null",
-                            "US_10": "null",
-                            "US_10.5": "null",
-                            "US_11": "null",
-                            "US_11.5": "null",
-                            "US_12": "null",
-                            "US_13": "null",
-                            "US_14": "null",
-                            "US_15": "null",
-                            "US_16": "null"
-                        },
-                        "women": {
-                            "US_4": "null",
-                            "US_4.5": "null",
-                            "US_5": "null",
-                            "US_5.5": "null",
-                            "US_6": "null",
-                            "US_6.5": "null",
-                            "US_7": "null",
-                            "US_7.5": "null",
-                            "US_8": "null",
-                            "US_8.5": "null",
-                            "US_9": "null",
-                            "US_9.5": "null",
-                            "US_10": "null",
-                            "US_10.5": "null",
-                            "US_11": "null",
-                            "US_11.5": "null",
-                            "US_12": "null"
-                        },
-                        "kids": {
-                            "US_3.5": "null",
-                            "US_4": "null",
-                            "US_4.5": "null",
-                            "US_5": "null",
-                            "US_5.5": "null",
-                            "US_6": "null",
-                            "US_6.5": "null",
-                            "US_7": "null"
-                        }
+                "mens": {
+                    "US_6": {
+                        "stocks": "null",
+                        "price": "null"
+                    },
+                    "US_6.5": {
+                        "stocks": "null",
+                        "price": "null"
+                    },
+                    "US_7": {
+                        "stocks": "null",
+                        "price": "null"
+                    },
+                    "US_7.5": {
+                        "stocks": "null",
+                        "price": "null"
+                    },
+                    "US_8": {
+                        "stocks": "null",
+                        "price": "null"
+                    },
+                    "US_8.5": {
+                        "stocks": "null",
+                        "price": "null"
+                    },
+                    "US_9": {
+                        "stocks": "null",
+                        "price": "null"
+                    },
+                    "US_9.5": {
+                        "stocks": "null",
+                        "price": "null"
+                    },
+                    "US_10": {
+                        "stocks": "null",
+                        "price": "null"
+                    },
+                    "US_10.5": {
+                        "stocks": "null",
+                        "price": "null"
+                    },
+                    "US_11": {
+                        "stocks": "null",
+                        "price": "null"
+                    },
+                    "US_11.5": {
+                        "stocks": "null",
+                        "price": "null"
+                    },
+                    "US_12": {
+                        "stocks": "null",
+                        "price": "null"
+                    },
+                    "US_13": {
+                        "stocks": "null",
+                        "price": "null"
+                    },
+                    "US_14": {
+                        "stocks": "null",
+                        "price": "null"
+                    },
+                    "US_15": {
+                        "stocks": "null",
+                        "price": "null"
+                    },
+                    "US_16": {
+                        "stocks": "null",
+                        "price": "null"
                     }
-                ],
-                "sandals": [
-                    {
-                        "mens": {
-                            "US_6": "null",
-                            "US_6.5": "null",
-                            "US_7": "null",
-                            "US_7.5": "null",
-                            "US_8": "null",
-                            "US_8.5": "null",
-                            "US_9": "null",
-                            "US_9.5": "null",
-                            "US_10": "null",
-                            "US_10.5": "null",
-                            "US_11": "null",
-                            "US_11.5": "null",
-                            "US_12": "null",
-                            "US_13": "null",
-                            "US_14": "null",
-                            "US_15": "null",
-                            "US_16": "null"
-                        },
-                        "women": {
-                            "US_4": "null",
-                            "US_4.5": "null",
-                            "US_5": "null",
-                            "US_5.5": "null",
-                            "US_6": "null",
-                            "US_6.5": "null",
-                            "US_7": "null",
-                            "US_7.5": "null",
-                            "US_8": "null",
-                            "US_8.5": "null",
-                            "US_9": "null",
-                            "US_9.5": "null",
-                            "US_10": "null",
-                            "US_10.5": "null",
-                            "US_11": "null",
-                            "US_11.5": "null",
-                            "US_12": "null"
-                        },
-                        "kids": {
-                            "US_3.5": "null",
-                            "US_4": "null",
-                            "US_4.5": "null",
-                            "US_5": "null",
-                            "US_5.5": "null",
-                            "US_6": "null",
-                            "US_6.5": "null",
-                            "US_7": "null"
-                        }
-                    }
-                ],
-                "apparels": [
-                    {
-                        "mens": {
-                            "xs": "null",
-                            "s": "null",
-                            "m": "null",
-                            "l": "null",
-                            "xl": "null"
-                        },
-                        "women": {
-                            "xs": "null",
-                            "s": "null",
-                            "m": "null",
-                            "l": "null",
-                            "xl": "null"
-                        },
-                        "kids": {
-                            "xs": "null",
-                            "s": "null",
-                            "m": "null",
-                            "l": "null",
-                            "xl": "null"
-                        }
-                    }
-                ]
+                },
+                "women": {
+                    "US_4": "null",
+                    "US_4.5": "null",
+                    "US_5": "null",
+                    "US_5.5": "null",
+                    "US_6": "null",
+                    "US_6.5": "null",
+                    "US_7": "null",
+                    "US_7.5": "null",
+                    "US_8": "null",
+                    "US_8.5": "null",
+                    "US_9": "null",
+                    "US_9.5": "null",
+                    "US_10": "null",
+                    "US_10.5": "null",
+                    "US_11": "null",
+                    "US_11.5": "null",
+                    "US_12": "null"
+                },
+                "kids": {
+                    "US_3.5": "null",
+                    "US_4": "null",
+                    "US_4.5": "null",
+                    "US_5": "null",
+                    "US_5.5": "null",
+                    "US_6": "null",
+                    "US_6.5": "null",
+                    "US_7": "null"
+                }
+            }
+        ],
+        "sandals": [
+            {
+                "mens": {
+                    "US_6": "null",
+                    "US_6.5": "null",
+                    "US_7": "null",
+                    "US_7.5": "null",
+                    "US_8": "null",
+                    "US_8.5": "null",
+                    "US_9": "null",
+                    "US_9.5": "null",
+                    "US_10": "null",
+                    "US_10.5": "null",
+                    "US_11": "null",
+                    "US_11.5": "null",
+                    "US_12": "null",
+                    "US_13": "null",
+                    "US_14": "null",
+                    "US_15": "null",
+                    "US_16": "null"
+                },
+                "women": {
+                    "US_4": "null",
+                    "US_4.5": "null",
+                    "US_5": "null",
+                    "US_5.5": "null",
+                    "US_6": "null",
+                    "US_6.5": "null",
+                    "US_7": "null",
+                    "US_7.5": "null",
+                    "US_8": "null",
+                    "US_8.5": "null",
+                    "US_9": "null",
+                    "US_9.5": "null",
+                    "US_10": "null",
+                    "US_10.5": "null",
+                    "US_11": "null",
+                    "US_11.5": "null",
+                    "US_12": "null"
+                },
+                "kids": {
+                    "US_3.5": "null",
+                    "US_4": "null",
+                    "US_4.5": "null",
+                    "US_5": "null",
+                    "US_5.5": "null",
+                    "US_6": "null",
+                    "US_6.5": "null",
+                    "US_7": "null"
+                }
+            }
+        ],
+        "apparels": [
+            {
+                "mens": {
+                    "xs": "null",
+                    "s": "null",
+                    "m": "null",
+                    "l": "null",
+                    "xl": "null"
+                },
+                "women": {
+                    "xs": "null",
+                    "s": "null",
+                    "m": "null",
+                    "l": "null",
+                    "xl": "null"
+                },
+                "kids": {
+                    "xs": "null",
+                    "s": "null",
+                    "m": "null",
+                    "l": "null",
+                    "xl": "null"
+                }
             }
         ]
     }

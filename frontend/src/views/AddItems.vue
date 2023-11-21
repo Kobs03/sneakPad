@@ -95,23 +95,15 @@ export default {
 
     async addItems() {
       try {
-        const newProducts = {
-          productName: this.newName,
-          productBrand: this.newBrand,
-          productDescription: this.newDescription,
-          productPrice: this.newPrice,
-          userCategory: this.newUserCategory,
-          productCategory: this.newCategory,
-          sizes: {
-            small: this.sizes.small,
-            medium: this.sizes.medium,
-            large: this.sizes.large,
-          },
-        };
-
         this.items.products = await axios.post(
           "http://localhost:8080/products/addproducts",
-          newProducts
+          {
+            product_name: this.newName,
+            product_brand: this.newBrand,
+            product_description: this.newDescription,
+            user_category: this.newUserCategory,
+            product_category: this.newCategory,
+          }
         );
 
         this.$router.push("/products");

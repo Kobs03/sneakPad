@@ -6,14 +6,13 @@
     <div class="card">
       Product Id: {{ item._id }} <br />
       Name:<router-link :to="`/products/${item._id}`">{{
-        item.productName
+        item.product_name
       }}</router-link>
       <br />
-      Brand: {{ item.productBrand }} <br />
-      Description: {{ item.productDescription }} <br />
-      Category: {{ item.productCategory }} <br />
-      Price: {{ item.productPrice }} <br />
-      Sizes: {{ item.sizes }} <br />
+      Brand: {{ item.product_brand }} <br />
+      Description: {{ item.product_description }} <br />
+      Category: {{ item.product_category }} <br />
+      User-Category: {{ item.user_category }} <br />
       <br />
       <router-link :to="`/products/editProduct/${item._id}`">
         <button>Edit</button>
