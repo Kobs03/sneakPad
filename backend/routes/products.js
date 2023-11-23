@@ -12,6 +12,7 @@ router.get('/', async (req, res, next) => {
             console.log(err)
         })
     res.send(productData)
+
 })
 
 // List all product variants
@@ -58,36 +59,39 @@ router.get('/:id', async (req, res) => {
 router.post('/addProducts', async (req, res) => {
 
     try {
-        const newProduct = new products_data(req.body)
+
+        const newProduct = new products_data(
+            req.body
+        )
+        
+        let variantData = [
+            {   
+                variant_id : newProduct.id,
+                variant_size: "US_1",
+                variant_price: 5299,
+                number_of_stocks: 3
+            },
+            {
+                variant_id : newProduct.id,
+                variant_size: "US_2",
+                variant_price: 5299,
+                number_of_stocks: 3
+            },
+            {
+                variant_id : newProduct.id,
+                variant_size: "US_3",
+                variant_price: 5299,
+                number_of_stocks: 3
+            },
+        ]
+
+        const newVariants = await product_variants.insertMany(variantData)
 
         await newProduct.save()
 
-        const newVariants = product_variants.insertMany(
-            [
-                // req.body
-
-                {
-                    variant_id: newProduct._id,
-                    variant_size: "US_1",
-                    variant_price: 5299,
-                    number_of_stocks: 3
-                },
-                {
-                    variant_id: newProduct._id,
-                    variant_size: "US_2",
-                    variant_price: 5299,
-                    number_of_stocks: 3
-                },
-                {
-                    variant_id: newProduct._id,
-                    variant_size: "US_3",
-                    variant_price: 5299,
-                    number_of_stocks: 3
-                },
-            ]
-        )
-
         console.log(newVariants)
+        console.log(newProduct)
+
         res.redirect('/products')
 
     } catch (error) {
@@ -125,7 +129,7 @@ router.delete('/delete/:id', async (req, res) => {
         const id = req.params.id;
 
         await products_data.findByIdAndDelete(id)
-        await product_variants.findByIdAndRemove({ variant_id: id })
+        await product_variants.deleteMany({ variant_id: id })
 
     } catch (error) {
 

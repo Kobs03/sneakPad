@@ -37,7 +37,6 @@ const products = new Schema({
 })
 
 
-
 const variants = new Schema({
 
     variant_id: {
@@ -62,7 +61,13 @@ const variants = new Schema({
 
 })
 
-const products_data = mongoose.model('Products', products);
-const product_variants = mongoose.model('Variants', variants);
+// products.post('findOneAndDelete', async (data) => {
+//     console.log(data)
+//     console.log('post data delete!')
+// })
 
-module.exports = { products_data, product_variants }
+
+const product_variants = mongoose.model('Variants', variants);
+const products_data = mongoose.model('Products', products);
+
+module.exports = { products_data, product_variants } 

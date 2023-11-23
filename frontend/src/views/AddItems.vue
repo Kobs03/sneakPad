@@ -1,7 +1,7 @@
 <template>
   <h1>Add product listing</h1>
 
-  <form action="/products">
+  <form action="/products" >
     <label for="name"> Name : </label>
     <input type="text" id="name" v-model="newName" required /> <br />
     <br />
