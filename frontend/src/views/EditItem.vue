@@ -1,8 +1,6 @@
 <template>
   <h1>Edit me sempai!!!</h1>
 
-  <!-- {{ editVariants }} -->
-
   <form action="/products">
     <label for="name"> Name : </label> <br />
     <input type="text" id="name" v-model="editProduct.product_name" required />
@@ -101,7 +99,7 @@
         </button>
       </form>
 
-      <div
+      <form
         :action="editProduct._id"
         v-for="(variantDatas, index) in editProduct.variants"
         :key="index"
@@ -160,9 +158,9 @@
             Save
           </button>
           &nbsp;
-          <button @click="deleteVariant(variantDatas._id)">Delete</button>
+          <button type="submit" @click="deleteVariant(variantDatas._id)">Delete</button>
         </div>
-      </div>
+      </form>
     </form>
 
     <br />
@@ -228,7 +226,6 @@ export default {
             variantData: this.variantsContainer,
           }
         );
-        console.log("addVariant clicked");
       } catch (error) {
         console.log(error);
       }
@@ -267,6 +264,8 @@ export default {
         console.log(error);
       }
     },
+
+    // Button functions
 
     toggleEdit() {
       this.toEdit = !this.toEdit;

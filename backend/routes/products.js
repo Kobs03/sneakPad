@@ -120,35 +120,42 @@ router.post('/addProducts', async (req, res) => {
 
 router.post('/addVariants/:id', async (req, res) => {
 
-    id = req.params.id
+    try {
+        id = req.params.id
 
-    const findProduct = await products_data.findById(
-        {
-            _id: id
-        }
-    )
-
-    const variantsArray = req.body.variantData
-
-    // Iterate the objects in the array then save and push
-
-    for (const object of variantsArray) {
-
-        object.products = findProduct._id
-
-        const newVariant = await product_variants(
-            object
+        const findProduct = await products_data.findById(
+            {
+                _id: id
+            }
         )
 
-        await newVariant.save()
-        await findProduct.variants.push(newVariant)
+        const variantsArray = req.body.variantData
+
+        // Iterate the objects in the array then save and push
+
+        for (const object of variantsArray) {
+
+            object.products = findProduct._id
+
+            const newVariant = await product_variants(
+                object
+            )
+
+            await newVariant.save()
+            await findProduct.variants.push(newVariant)
+        }
+
+        // save the updated new product
+
+        await findProduct.save()
+
+        res.json(findProduct)
+    } catch (error) {
+        console.log(error)
+        console.log("ADD VARIANTS ROUTE ERROR!")
     }
 
-    // save the updated new product
 
-    await findProduct.save()
-
-    res.json(findProduct)
 
 })
 
