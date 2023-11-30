@@ -24,40 +24,17 @@ const products = new Schema({
         required: false,
     },
 
-    user_category: {
-        type: String,
-        required: false,
-    },
+    // product_img: {
+    //     type: [String],
+    //     required: false,
+    // },
 
-    product_img: {
-        type: [String],
-        required: false,
-    },
-
-})
-
-
-const variants = new Schema({
-
-    variant_id: {
-        type: String,
-        required: false,
-    },
-
-    variant_size: {
-        type: String,
-        required: false,
-    },
-
-    variant_price: {
-        type: Number,
-        required: false,
-    },
-
-    number_of_stocks: {
-        type: Number,
-        required: false,
-    }
+    variants: [
+        {
+            type: Schema.Types.ObjectId,
+            ref: 'Variants'
+        }
+    ]
 
 })
 
@@ -66,8 +43,6 @@ const variants = new Schema({
 //     console.log('post data delete!')
 // })
 
-
-const product_variants = mongoose.model('Variants', variants);
 const products_data = mongoose.model('Products', products);
 
-module.exports = { products_data, product_variants } 
+module.exports = { products_data } 

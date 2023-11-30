@@ -12,7 +12,18 @@
       Brand: {{ item.product_brand }} <br />
       Description: {{ item.product_description }} <br />
       Category: {{ item.product_category }} <br />
-      User-Category: {{ item.user_category }} <br />
+      variants: <br />
+
+      <div class="variants" v-for="variant in item.variants" :key="variant">
+        Id : {{ variant._id }} <br />
+          Product Id reference: {{ variant.products }} <br />
+          User-Category: {{ variant.user_category }} <br />
+          Size: {{ variant.variant_size }} <br />
+          Price: ${{ variant.variant_price }} <br />
+          Stocks: {{ variant.number_of_stocks }} <br />
+          <br />
+      </div>
+
       <br />
       <router-link :to="`/products/editProduct/${item._id}`">
         <button>Edit</button>
@@ -39,7 +50,7 @@ export default {
   methods: {
     deleteProduct(id) {
       try {
-        axios.delete(`http://localhost:8080/products/delete/${id}`);
+        axios.delete(`http://localhost:8080/products/delProduct/${id}`);
         this.$router.push("/products").then(() => {
           this.$router.go();
         });

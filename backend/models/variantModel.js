@@ -3,7 +3,7 @@ const { Schema } = mongoose;
 
 const variants = new Schema({
 
-    variant_id: {
+    user_category: {
         type: String,
         required: false,
     },
@@ -21,10 +21,15 @@ const variants = new Schema({
     number_of_stocks: {
         type: Number,
         required: false,
+    },
+
+    products: {
+        type: Schema.Types.ObjectId,
+        ref: 'Products'
     }
 
 })
 
 const product_variants = mongoose.model('Variants', variants);
 
-module.exports =  product_variants 
+module.exports = { product_variants }

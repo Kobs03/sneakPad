@@ -36,5 +36,6 @@ export default {
   mounted() {
     this.getAllProducts();
   },
+
 };
 </script>

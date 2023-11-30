@@ -4,8 +4,4 @@ export const items = reactive({
 
     products: [],
 
-    mounted() {
-        this.getAllProducts();
-    },
-
 })

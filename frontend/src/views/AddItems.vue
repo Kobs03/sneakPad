@@ -1,12 +1,11 @@
 <template>
   <h1>Add product listing</h1>
-
-  <form action="/products" >
-    <label for="name"> Name : </label>
+  <form action="/products">
+    <label for="name"> Name : </label> <br />
     <input type="text" id="name" v-model="newName" required /> <br />
     <br />
 
-    <label for="brand"> Brand : </label>
+    <label for="brand"> Brand : </label> <br />
     <input type="text" id="brand" v-model="newBrand" required /> <br />
     <br />
 
@@ -23,7 +22,7 @@
     <br />
     <br />
 
-    <label for="category"> Category : </label>
+    <label for="category"> Category : </label> <br />
     <select id="category" v-model="newCategory" required>
       <option value="none" selected disabled>Choose category</option>
       <option value="shoes">Shoes</option>
@@ -33,38 +32,47 @@
     <br />
     <br />
 
-    <label for="user-category"> User-Category : </label>
-    <select id="user-category" v-model="newUserCategory" required>
-      <option value="none" selected disabled>Choose user-category</option>
-      <option value="Mens">Mens</option>
-      <option value="Womens">Womens</option>
-      <option value="Kids">Kids</option>
-      <option value="Unisex">Unisex</option>
-    </select>
-    <br />
+    <button @click.prevent="addVariants" v-if="!variantsContainer.length">
+      Add Variants
+    </button>
     <br />
 
-    <div v-if="newUserCategory == 'Mens'">
-      <hr />
-      <label for="sizes"> Sizes : </label> <br /><br />
-      <label for="small"> Small : </label>
-      <input type="number" id="small" v-model="sizes.small" />
-      <br /><br />
-      <label for="medium"> Medium : </label>
-      <input type="number" id="medium" v-model="sizes.medium" />
-      <br /><br />
-      <label for="small"> Large : </label>
-      <input type="large" id="large" v-model="sizes.large" />
-      <hr />
-      <br /><br />
+    <div
+      class="variants"
+      v-for="(variantDatas, index) in variantsContainer"
+      :key="index"
+    >
+      <label for="user-category"> User-Category : </label> <br />
+      <select id="user-category" v-model="variantDatas.user_category" required>
+        <option value="none" selected disabled>Choose user-category</option>
+        <option value="Mens">Mens</option>
+        <option value="Womens">Womens</option>
+        <option value="Kids">Kids</option>
+        <option value="Unisex">Unisex</option>
+      </select>
+      <br />
+
+      <input type="hidden" v-model="variantsContainer[index]" />
+
+      <label for="size">Size: </label> <br />
+      <input type="text" v-model="variantDatas.variant_size" /> <br />
+
+      <label for="price">Price: </label> <br />
+      <input type="number" v-model="variantDatas.variant_price" /> <br />
+
+      <label for="stocks">Stocks: </label> <br />
+      <input type="number" v-model="variantDatas.number_of_stocks" /> <br />
+      <br />
+
+      <button @click.prevent="addVariants">+</button> &nbsp;
+      <button @click.prevent="delVariants(index)">X</button>
     </div>
 
-    <label for="price"> Price : </label>
-    <input type="number" id="price" v-model="newPrice" required /> <br />
     <br />
 
     <button type="submit" @click="addItems">Submit</button>
   </form>
+
 </template>
 
 <script>
@@ -80,13 +88,7 @@ export default {
       newDescription: "",
       newCategory: "",
       newUserCategory: "",
-      newPrice: null,
-      stocksCount: null,
-      sizes: {
-        small: null,
-        medium: null,
-        large: null,
-      },
+      variantsContainer: [],
     };
   },
 
@@ -96,13 +98,14 @@ export default {
     async addItems() {
       try {
         this.items.products = await axios.post(
-          "http://localhost:8080/products/addproducts",
+          "http://localhost:8080/products/addProducts",
           {
             product_name: this.newName,
             product_brand: this.newBrand,
             product_description: this.newDescription,
             user_category: this.newUserCategory,
             product_category: this.newCategory,
+            variantData: this.variantsContainer,
           }
         );
 
@@ -112,6 +115,15 @@ export default {
         console.log(error);
       }
     },
+
+    addVariants() {
+      this.variantsContainer.push({});
+    },
+
+    delVariants(index) {
+      this.variantsContainer.splice(index, 1);
+    },
   },
 };
 </script>
+

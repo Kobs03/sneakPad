@@ -4,17 +4,23 @@
   <br />
 
   Product Id: {{ itemDetails._id }} <br />
-  Name:<router-link :to="`/products/${itemDetails._id}`">{{
-    itemDetails.productName
-  }}</router-link>
+  Product Id: {{ itemDetails._id }} <br />
+  Name:{{ itemDetails.product_name }}
   <br />
-  Brand: {{ itemDetails.productBrand }} <br />
-  Description: {{ itemDetails.productDescription }} <br />
-  Category: {{ itemDetails.productCategory }} <br />
-  Price: {{ itemDetails.productPrice }} <br />
-  In Stock: {{ itemDetails.productStocks }} <br />
-  <br />
+  Brand: {{ itemDetails.product_brand }} <br />
+  Description: {{ itemDetails.product_description }} <br />
+  Category: {{ itemDetails.product_category }} <br />
+  variants: <br />
 
+  <div class="variants" v-for="variant in itemDetails.variants" :key="variant">
+    Id : {{ variant._id }} <br />
+    Product Id reference: {{ variant.products }} <br />
+    User-Category: {{ variant.user_category }} <br />
+    Size: {{ variant.variant_size }} <br />
+    Price: ${{ variant.variant_price }} <br />
+    Stocks: {{ variant.number_of_stocks }} <br />
+    <br />
+  </div>
 </template>
 
 <script>
@@ -34,7 +40,6 @@ export default {
         const singleItem = await axios.get(
           `http://localhost:8080/products/` + this.productId
         );
-        console.log(singleItem);
         this.itemDetails = singleItem.data;
       } catch (error) {
         console.error(error);
