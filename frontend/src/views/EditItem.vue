@@ -43,7 +43,7 @@
 
     <p>Variants:</p>
     <hr />
-
+    <br />
     <!-- SPECIFIC PRODUCT ITERATION -->
 
     <form :action="editProduct._id">
@@ -82,13 +82,20 @@
           <br />
 
           <label for="size">Size: </label> <br />
-          <input type="text" v-model="variantDatas.variant_size" /> <br />
+          <input type="text" v-model="variantDatas.variant_size" required />
+          <br />
 
           <label for="price">Price: </label> <br />
-          <input type="number" v-model="variantDatas.variant_price" /> <br />
+          <input type="number" v-model="variantDatas.variant_price" required />
+          <br />
 
           <label for="stocks">Stocks: </label> <br />
-          <input type="number" v-model="variantDatas.number_of_stocks" /> <br />
+          <input
+            type="number"
+            v-model="variantDatas.number_of_stocks"
+            required
+          />
+          <br />
           <br />
 
           <button @click.prevent="delVariants(index)">X</button> &nbsp;
@@ -98,7 +105,7 @@
           Submit Variants
         </button>
       </form>
-
+      <hr />
       <form
         :action="editProduct._id"
         v-for="(variantDatas, index) in editProduct.variants"
@@ -134,11 +141,17 @@
           <br />
 
           <label for="size">Size: </label> <br />
-          <input type="text" id="size" v-model="variantDatas.variant_size" />
+          <input
+            type="text"
+            id="size"
+            v-model="variantDatas.variant_size"
+            required
+          />
           <br />
 
           <label for="price">Price: </label> <br />
           <input
+            required
             type="number"
             id="price"
             v-model="variantDatas.variant_price"
@@ -147,6 +160,7 @@
 
           <label for="stocks">Stocks: </label> <br />
           <input
+            required
             type="number"
             id="stocks"
             v-model="variantDatas.number_of_stocks"
@@ -158,7 +172,9 @@
             Save
           </button>
           &nbsp;
-          <button type="submit" @click="deleteVariant(variantDatas._id)">Delete</button>
+          <button type="submit" @click="deleteVariant(variantDatas._id)">
+            Delete
+          </button>
         </div>
       </form>
     </form>

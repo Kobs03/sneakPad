@@ -5,22 +5,22 @@ const variants = new Schema({
 
     user_category: {
         type: String,
-        required: false,
+        required: true,
     },
 
     variant_size: {
         type: String,
-        required: false,
+        required: true,
     },
 
     variant_price: {
         type: Number,
-        required: false,
+        required: true,
     },
 
     number_of_stocks: {
         type: Number,
-        required: false,
+        required: true,
     },
 
     products: {

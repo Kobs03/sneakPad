@@ -1,5 +1,6 @@
 <template>
   <h1>Add product listing</h1>
+  {{ file }}
   <form action="/products">
     <label for="name"> Name : </label> <br />
     <input type="text" id="name" v-model="newName" required /> <br />
@@ -31,6 +32,17 @@
     </select>
     <br />
     <br />
+
+    <!-- IMAGE UPLOAD FORM !!! -->
+
+    <form action="" enctype="multipart/form-data">
+      <input type="file" name="image" id="" @change="onFileSelected" />
+      <br /><br />
+      <!-- <button type="submit" @click.prevent="addImage">Upload</button>
+      <br /><br /> -->
+    </form>
+
+    <!-- ADD VARIANT SECTION !!! -->
 
     <button @click.prevent="addVariants" v-if="!variantsContainer.length">
       Add Variants
@@ -72,7 +84,6 @@
 
     <button type="submit" @click="addItems">Submit</button>
   </form>
-
 </template>
 
 <script>
@@ -89,24 +100,46 @@ export default {
       newCategory: "",
       newUserCategory: "",
       variantsContainer: [],
+      file: "",
     };
   },
 
   methods: {
-    // add product items on database
+    // store the file input in this.file var
+    onFileSelected(event) {
+      this.file = event.target.files[0];
+    },
 
-    async addItems() {
+    async addImage() {
+      const formData = new FormData();
+      formData.append("image", this.file);
+
       try {
         this.items.products = await axios.post(
           "http://localhost:8080/products/addProducts",
-          {
-            product_name: this.newName,
-            product_brand: this.newBrand,
-            product_description: this.newDescription,
-            user_category: this.newUserCategory,
-            product_category: this.newCategory,
-            variantData: this.variantsContainer,
-          }
+          formData
+        );
+      } catch (error) {
+        console.log(error);
+        console.log("IMAGE UPLOAD ERROR!");
+      }
+    },
+
+    // add product items on database
+    async addItems() {
+      try {
+        const productData = {
+          product_name: this.newName,
+          product_brand: this.newBrand,
+          product_description: this.newDescription,
+          user_category: this.newUserCategory,
+          product_category: this.newCategory,
+          variantData: this.variantsContainer,
+        };
+
+        this.items.products = await axios.post(
+          "http://localhost:8080/products/addProducts",
+          productData
         );
 
         this.$router.push("/products");

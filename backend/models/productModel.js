@@ -6,33 +6,41 @@ const products = new Schema({
 
     product_name: {
         type: String,
-        required: false,
+        required: true,
     },
 
     product_brand: {
         type: String,
-        required: false,
+        required: true,
     },
 
     product_description: {
         type: String,
-        required: false,
+        required: true,
     },
 
     product_category: {
         type: String,
-        required: false,
+        required: true,
     },
 
-    // product_img: {
-    //     type: [String],
-    //     required: false,
-    // },
+    product_img: [
+        {
+            img_name: {
+                type: [String],
+                required: false,
+            },
+            img_url: {
+                type: [String],
+                required: false,
+            }
+        }
+    ],
 
     variants: [
         {
             type: Schema.Types.ObjectId,
-            ref: 'Variants'
+            ref: 'Variants',
         }
     ]
 

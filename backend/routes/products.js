@@ -1,7 +1,41 @@
 const express = require('express');
 const router = express.Router();
+const cloudinary = require('cloudinary').v2;
+const streamifier = require('streamifier');
+
+
+const { storage, bufferToStream } = require('../cloudinary')
+const multer = require('multer') // for parsing multipart/form-data
+// image upload file destination
+// const upload = multer({ storage })
+const upload = multer(storage)
+
+
 const { products_data } = require('../models/productModel')
 const { product_variants } = require('../models/variantModel')
+
+// TEST ROUTE !!!
+
+router.post('/test', upload.single("image"), (req, res) => {
+    try {
+        console.log("route reached!")
+        console.log(req.file)
+        console.log('////////////////////////////////////////////////////')
+
+        if (req.file) {
+            let cld_upload_stream = cloudinary.uploader.upload_stream({ folder: "sneak_pad" },
+                function (error, result) {
+                    console.log(error, result);
+                });
+
+            streamifier.createReadStream(req.file.buffer).pipe(cld_upload_stream);
+        }
+
+    } catch (error) {
+        console.log(error)
+        console.log("test route error")
+    }
+})
 
 // GET ALL PRODUCTS ROUTE
 
@@ -63,9 +97,20 @@ router.get('/:id', async (req, res) => {
 
 // ADD PRODUCTS ROUTE
 
-router.post('/addProducts', async (req, res) => {
+router.post('/addProducts', upload.single("image"), async (req, res) => {
 
     try {
+
+        // image upload
+
+        if (req.file) {
+            let cld_upload_stream = cloudinary.uploader.upload_stream({ folder: "sneak_pad" },
+                function (error, result) {
+                    console.log(error, result);
+                });
+
+            streamifier.createReadStream(req.file.buffer).pipe(cld_upload_stream);
+        }
 
         // create new products and save
 
@@ -107,7 +152,11 @@ router.post('/addProducts', async (req, res) => {
 
         await findProduct.save()
 
-        res.json(findProduct)
+        // res.json(findProduct)
+
+        console.log("Products Successfully added! " + findProduct)
+        console.log("Requested data: " + req.files)
+
 
     } catch (error) {
         console.log(error)
@@ -150,12 +199,13 @@ router.post('/addVariants/:id', async (req, res) => {
         await findProduct.save()
 
         res.json(findProduct)
+
+        console.log("Variants Successfully added! " + findProduct)
+
     } catch (error) {
         console.log(error)
         console.log("ADD VARIANTS ROUTE ERROR!")
     }
-
-
 
 })
 
@@ -173,6 +223,8 @@ router.put('/editProduct/:id', async (req, res) => {
         )
 
         res.json(updateProduct)
+
+        console.log("EDIT PRODUCT SUCCESSFUL")
 
     } catch (error) {
         console.log(error)
@@ -196,6 +248,8 @@ router.put('/editVariant/:id', async (req, res) => {
 
         res.json(updateVariant)
 
+        console.log("Edited successfully")
+
     } catch (error) {
         console.log(error)
         console.log("PUT, Edit variant route error!")
@@ -216,6 +270,8 @@ router.delete('/delProduct/:id', async (req, res) => {
         await product_variants.deleteMany({ _id: delProduct.variants })
         res.json(delProduct)
 
+        console.log("Deleted Product: " + delProduct)
+
     } catch (error) {
         console.log(error)
         console.log("DELETE, delete product route error!")
@@ -235,6 +291,8 @@ router.delete('/delVariant/:id', async (req, res) => {
         const delVariant = await product_variants.findOneAndDelete({ _id: id })
         res.json(delVariant)
 
+        console.log("Deleted Variant " + delVariant)
+
     } catch (error) {
         console.log(error)
         console.log("DELETE, delete variant route error!")
@@ -242,6 +300,7 @@ router.delete('/delVariant/:id', async (req, res) => {
 
 })
 
+module.exports = router;
 
 // -------------OLD CODE BACKUP----------------------------//
 
@@ -374,4 +433,3 @@ router.delete('/delVariant/:id', async (req, res) => {
 //     }
 // })
 
-module.exports = router;
