@@ -1,9 +1,15 @@
 <template>
   <h1>Add product listing</h1>
-  {{ file }}
-  <form action="/products">
+  {{ file }} <br />
+  {{ variantsContainer }}
+  <form
+    name="createProducts"
+    @change="onInputChange"
+    enctype="multipart/form-data"
+  >
     <label for="name"> Name : </label> <br />
-    <input type="text" id="name" v-model="newName" required /> <br />
+    <input type="text" id="name" v-model="newName" required />
+    <br />
     <br />
 
     <label for="brand"> Brand : </label> <br />
@@ -35,54 +41,56 @@
 
     <!-- IMAGE UPLOAD FORM !!! -->
 
-    <form action="" enctype="multipart/form-data">
-      <input type="file" name="image" id="" @change="onFileSelected" />
-      <br /><br />
-      <!-- <button type="submit" @click.prevent="addImage">Upload</button>
-      <br /><br /> -->
-    </form>
+    <input type="file" name="image" id="" @change="onFileSelected" />
+    <br /><br />
 
     <!-- ADD VARIANT SECTION !!! -->
 
-    <button @click.prevent="addVariants" v-if="!variantsContainer.length">
-      Add Variants
-    </button>
-    <br />
-
-    <div
-      class="variants"
-      v-for="(variantDatas, index) in variantsContainer"
-      :key="index"
-    >
-      <label for="user-category"> User-Category : </label> <br />
-      <select id="user-category" v-model="variantDatas.user_category" required>
-        <option value="none" selected disabled>Choose user-category</option>
-        <option value="Mens">Mens</option>
-        <option value="Womens">Womens</option>
-        <option value="Kids">Kids</option>
-        <option value="Unisex">Unisex</option>
-      </select>
+    <form action="">
+      <button @click.prevent="addVariants" v-if="!variantsContainer.length">
+        Add Variants
+      </button>
       <br />
 
-      <input type="hidden" v-model="variantsContainer[index]" />
+      <div
+        class="variants"
+        v-for="(variantDatas, index) in variantsContainer"
+        :key="index"
+      >
+        <label for="user-category"> User-Category : </label> <br />
+        <select
+          id="user-category"
+          v-model="variantDatas.user_category"
+          required
+        >
+          <option value="none" selected disabled>Choose user-category</option>
+          <option value="Mens">Mens</option>
+          <option value="Womens">Womens</option>
+          <option value="Kids">Kids</option>
+          <option value="Unisex">Unisex</option>
+        </select>
+        <br />
 
-      <label for="size">Size: </label> <br />
-      <input type="text" v-model="variantDatas.variant_size" /> <br />
+        <input type="hidden" v-model="variantsContainer[index]" />
 
-      <label for="price">Price: </label> <br />
-      <input type="number" v-model="variantDatas.variant_price" /> <br />
+        <label for="size">Size: </label> <br />
+        <input type="text" v-model="variantDatas.variant_size" /> <br />
 
-      <label for="stocks">Stocks: </label> <br />
-      <input type="number" v-model="variantDatas.number_of_stocks" /> <br />
-      <br />
+        <label for="price">Price: </label> <br />
+        <input type="number" v-model="variantDatas.variant_price" /> <br />
 
-      <button @click.prevent="addVariants">+</button> &nbsp;
-      <button @click.prevent="delVariants(index)">X</button>
-    </div>
+        <label for="stocks">Stocks: </label> <br />
+        <input type="number" v-model="variantDatas.number_of_stocks" /> <br />
+        <br />
+
+        <button @click.prevent="addVariants">+</button> &nbsp;
+        <button @click.prevent="delVariants(index)">X</button>
+      </div>
+    </form>
 
     <br />
 
-    <button type="submit" @click="addItems">Submit</button>
+    <button type="submit" @click.prevent="addItems">Submit</button>
   </form>
 </template>
 
@@ -110,40 +118,33 @@ export default {
       this.file = event.target.files[0];
     },
 
-    async addImage() {
-      const formData = new FormData();
-      formData.append("image", this.file);
-
-      try {
-        this.items.products = await axios.post(
-          "http://localhost:8080/products/addProducts",
-          formData
-        );
-      } catch (error) {
-        console.log(error);
-        console.log("IMAGE UPLOAD ERROR!");
-      }
+    onInputChange(event) {
+      console.log(event);
+      event.target.name = this.newName;
+      event.target.name = this.newBrand;
+      // const test = (event.target.name = this.newName);
+      // console.log(test);
     },
 
     // add product items on database
     async addItems() {
       try {
-        const productData = {
-          product_name: this.newName,
-          product_brand: this.newBrand,
-          product_description: this.newDescription,
-          user_category: this.newUserCategory,
-          product_category: this.newCategory,
-          variantData: this.variantsContainer,
-        };
+        const formData = new FormData();
+        formData.append("image", this.file);
+        formData.append("product_name", this.newName);
+        formData.append("product_brand", this.newBrand);
+        formData.append("product_description", this.newBrand);
+        formData.append("product_category", this.newBrand);
+        // appending variantContainer datas
+        formData.append("variantData", JSON.stringify(this.variantsContainer));
 
         this.items.products = await axios.post(
-          "http://localhost:8080/products/addProducts",
-          productData
+          "http://localhost:8080/products/test1",
+          formData
         );
 
-        this.$router.push("/products");
-        this.$router.go();
+        this.$router.push("/products").then(()=> this.$router.go())
+        // this.$router.go();
       } catch (error) {
         console.log(error);
       }

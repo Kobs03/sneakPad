@@ -37,6 +37,35 @@ router.post('/test', upload.single("image"), (req, res) => {
     }
 })
 
+// ANOTHER TEST ROUTE
+
+router.post('/test1', upload.single("image"), async (req, res) => {
+
+    if (req.file) {
+        let cld_upload_stream = cloudinary.uploader.upload_stream({ folder: "sneak_pad" },
+            function (error, result) {
+                console.log(error, result);
+            });
+
+        streamifier.createReadStream(req.file.buffer).pipe(cld_upload_stream);
+    }
+
+    console.log(req.file)
+    console.log(req.body)
+    let variants = JSON.parse(req.body.variantData)
+    let imgData = [
+        {
+            img_name: req.file.public_id,
+            img_url: req.file.url
+        }
+    ]
+    console.log(imgData)
+    console.log(variants)
+    res.json(req.body)
+})
+
+//--------------------------------------------------------------------------
+
 // GET ALL PRODUCTS ROUTE
 
 router.get('/', async (req, res) => {
@@ -132,7 +161,7 @@ router.post('/addProducts', upload.single("image"), async (req, res) => {
 
         // create new variant and store the req.body in test arr, 
 
-        const variantsArray = req.body.variantData
+        const variantsArray = JSON.parse(req.body.variantData)
 
         // Iterate the objects in the array then save and push
 
@@ -152,10 +181,11 @@ router.post('/addProducts', upload.single("image"), async (req, res) => {
 
         await findProduct.save()
 
+        res.redirect("/products")
         // res.json(findProduct)
 
         console.log("Products Successfully added! " + findProduct)
-        console.log("Requested data: " + req.files)
+        console.log("Requested data: " + req.file)
 
 
     } catch (error) {
