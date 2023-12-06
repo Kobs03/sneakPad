@@ -1,12 +1,9 @@
 <template>
   <h1>Add product listing</h1>
-  {{ file }} <br />
-  {{ variantsContainer }}
-  <form
-    name="createProducts"
-    @change="onInputChange"
-    enctype="multipart/form-data"
-  >
+
+  {{ file }}
+
+  <form name="createProducts" enctype="multipart/form-data">
     <label for="name"> Name : </label> <br />
     <input type="text" id="name" v-model="newName" required />
     <br />
@@ -41,7 +38,7 @@
 
     <!-- IMAGE UPLOAD FORM !!! -->
 
-    <input type="file" name="image" id="" @change="onFileSelected" />
+    <input type="file" name="image" id="" @change="onFileSelected" multiple />
     <br /><br />
 
     <!-- ADD VARIANT SECTION !!! -->
@@ -108,42 +105,44 @@ export default {
       newCategory: "",
       newUserCategory: "",
       variantsContainer: [],
-      file: "",
+      file: [],
     };
   },
 
   methods: {
     // store the file input in this.file var
     onFileSelected(event) {
-      this.file = event.target.files[0];
-    },
-
-    onInputChange(event) {
-      console.log(event);
-      event.target.name = this.newName;
-      event.target.name = this.newBrand;
-      // const test = (event.target.name = this.newName);
-      // console.log(test);
+      // this.file = event.target.files[0];
+      for (let imgs of event.target.files) {
+        this.file.push(imgs);
+      }
     },
 
     // add product items on database
+
     async addItems() {
       try {
         const formData = new FormData();
-        formData.append("image", this.file);
+
+        for (let resImg of this.file) {
+          formData.append("image", resImg);
+        }
+        // formData.append("image", this.file);
         formData.append("product_name", this.newName);
         formData.append("product_brand", this.newBrand);
         formData.append("product_description", this.newBrand);
         formData.append("product_category", this.newBrand);
-        // appending variantContainer datas
+
+        // appending array using stringify then parse in the backend
+
         formData.append("variantData", JSON.stringify(this.variantsContainer));
 
         this.items.products = await axios.post(
           "http://localhost:8080/products/test1",
           formData
         );
-
-        this.$router.push("/products").then(()=> this.$router.go())
+        console.log(formData.entries);
+        this.$router.push("/products").then(() => this.$router.go());
         // this.$router.go();
       } catch (error) {
         console.log(error);

@@ -39,29 +39,54 @@ router.post('/test', upload.single("image"), (req, res) => {
 
 // ANOTHER TEST ROUTE
 
-router.post('/test1', upload.single("image"), async (req, res) => {
+router.post('/test1', upload.array("image"), async (req, res) => {
 
-    if (req.file) {
-        let cld_upload_stream = cloudinary.uploader.upload_stream({ folder: "sneak_pad" },
-            function (error, result) {
-                console.log(error, result);
-            });
+    let uploadFromBuffer = (req, index) => {
 
-        streamifier.createReadStream(req.file.buffer).pipe(cld_upload_stream);
+        return new Promise((resolve, reject) => {
+
+            let cld_upload_stream = cloudinary.uploader.upload_stream(
+                {
+                    folder: "sneak_pad"
+                },
+                (error, result) => {
+
+                    if (result) {
+                        resolve(result);
+                    } else {
+                        reject(error);
+                    }
+                }
+            );
+
+            streamifier.createReadStream(req.files[index].buffer).pipe(cld_upload_stream);
+
+        });
+
+    };
+
+    let imgData = []
+
+    for (let i = 0; i < req.files.length; i++) {
+        let uploadedImg = await uploadFromBuffer(req, i);
+        console.log(uploadedImg)
+        let imgResult = {
+            img_name: uploadedImg.public_id,
+            img_url: uploadedImg.url
+        }
+        imgData.push(imgResult)
     }
 
-    console.log(req.file)
-    console.log(req.body)
-    let variants = JSON.parse(req.body.variantData)
-    let imgData = [
-        {
-            img_name: req.file.public_id,
-            img_url: req.file.url
-        }
-    ]
     console.log(imgData)
+
+    let variants = JSON.parse(req.body.variantData)
+
+    // console.log(req.files)
     console.log(variants)
     res.json(req.body)
+
+    // console.log(...req.files)
+
 })
 
 //--------------------------------------------------------------------------
@@ -132,21 +157,46 @@ router.post('/addProducts', upload.single("image"), async (req, res) => {
 
         // image upload
 
-        if (req.file) {
-            let cld_upload_stream = cloudinary.uploader.upload_stream({ folder: "sneak_pad" },
-                function (error, result) {
-                    console.log(error, result);
-                });
+        let uploadFromBuffer = (req) => {
 
-            streamifier.createReadStream(req.file.buffer).pipe(cld_upload_stream);
+            return new Promise((resolve, reject) => {
+
+                if (req.file) {
+                    let cld_upload_stream = cloudinary.uploader.upload_stream(
+                        {
+                            folder: "sneak_pad"
+                        },
+                        (error, result) => {
+
+                            if (result) {
+                                resolve(result);
+                            } else {
+                                reject(error);
+                            }
+                        }
+                    );
+
+                    streamifier.createReadStream(req.file.buffer).pipe(cld_upload_stream);
+                }
+
+            });
+
+        };
+
+        const uploadImg = await uploadFromBuffer(req)
+
+        let imgData =
+        {
+            img_name: uploadImg.public_id,
+            img_url: uploadImg.url
         }
 
         // create new products and save
 
+        req.body.product_img = imgData
+
         const newProduct = new products_data(
-
-            req.body
-
+            req.body,
         )
 
         await newProduct.save()
@@ -181,12 +231,10 @@ router.post('/addProducts', upload.single("image"), async (req, res) => {
 
         await findProduct.save()
 
+        console.log("Products Successfully added! " + findProduct)
+
         res.redirect("/products")
         // res.json(findProduct)
-
-        console.log("Products Successfully added! " + findProduct)
-        console.log("Requested data: " + req.file)
-
 
     } catch (error) {
         console.log(error)

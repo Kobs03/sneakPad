@@ -20,7 +20,6 @@ const bufferToStream = (data) => {
 
 }
 
-
 module.exports = {
     cloudinary,
     storage,
