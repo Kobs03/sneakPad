@@ -16,12 +16,7 @@ const storage = new CloudinaryStorage({
     }
 })
 
-const bufferToStream = (data) => {
-
-}
-
 module.exports = {
     cloudinary,
     storage,
-    bufferToStream
 }

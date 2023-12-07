@@ -1,101 +1,23 @@
 const express = require('express');
 const router = express.Router();
+
+
+// UPLOAD IMAGE MODULES
+
 const cloudinary = require('cloudinary').v2;
 const streamifier = require('streamifier');
-
-
-const { storage, bufferToStream } = require('../cloudinary')
-const multer = require('multer') // for parsing multipart/form-data
-// image upload file destination
-// const upload = multer({ storage })
+const { storage } = require('../cloudinary')
+const multer = require('multer')
 const upload = multer(storage)
 
+// SCHEMAS
 
 const { products_data } = require('../models/productModel')
 const { product_variants } = require('../models/variantModel')
 
-// TEST ROUTE !!!
-
-router.post('/test', upload.single("image"), (req, res) => {
-    try {
-        console.log("route reached!")
-        console.log(req.file)
-        console.log('////////////////////////////////////////////////////')
-
-        if (req.file) {
-            let cld_upload_stream = cloudinary.uploader.upload_stream({ folder: "sneak_pad" },
-                function (error, result) {
-                    console.log(error, result);
-                });
-
-            streamifier.createReadStream(req.file.buffer).pipe(cld_upload_stream);
-        }
-
-    } catch (error) {
-        console.log(error)
-        console.log("test route error")
-    }
-})
-
-// ANOTHER TEST ROUTE
-
-router.post('/test1', upload.array("image"), async (req, res) => {
-
-    let uploadFromBuffer = (req, index) => {
-
-        return new Promise((resolve, reject) => {
-
-            let cld_upload_stream = cloudinary.uploader.upload_stream(
-                {
-                    folder: "sneak_pad"
-                },
-                (error, result) => {
-
-                    if (result) {
-                        resolve(result);
-                    } else {
-                        reject(error);
-                    }
-                }
-            );
-
-            streamifier.createReadStream(req.files[index].buffer).pipe(cld_upload_stream);
-
-        });
-
-    };
-
-    let imgData = []
-
-    for (let i = 0; i < req.files.length; i++) {
-        let uploadedImg = await uploadFromBuffer(req, i);
-        console.log(uploadedImg)
-        let imgResult = {
-            img_name: uploadedImg.public_id,
-            img_url: uploadedImg.url
-        }
-        imgData.push(imgResult)
-    }
-
-    console.log(imgData)
-
-    let variants = JSON.parse(req.body.variantData)
-
-    // console.log(req.files)
-    console.log(variants)
-    res.json(req.body)
-
-    // console.log(...req.files)
-
-})
-
-//--------------------------------------------------------------------------
-
 // GET ALL PRODUCTS ROUTE
 
 router.get('/', async (req, res) => {
-    // res.send("WELCOME TO PRODUCT PAGE")
-    // display all products
 
     try {
         const allProducts = await products_data.find()
@@ -113,8 +35,6 @@ router.get('/', async (req, res) => {
 // GET ALL VARIANTS ROUTE ( FOR TESTING PURPOSES )
 
 router.get('/var', async (req, res) => {
-    // res.send("VIEW VARIANT PAGE")
-    // display all variants
 
     try {
 
@@ -151,44 +71,46 @@ router.get('/:id', async (req, res) => {
 
 // ADD PRODUCTS ROUTE
 
-router.post('/addProducts', upload.single("image"), async (req, res) => {
+router.post('/addProducts', upload.array("image"), async (req, res) => {
 
     try {
 
         // image upload
 
-        let uploadFromBuffer = (req) => {
+        let uploadFromBuffer = (req, index) => {
 
             return new Promise((resolve, reject) => {
 
-                if (req.file) {
-                    let cld_upload_stream = cloudinary.uploader.upload_stream(
-                        {
-                            folder: "sneak_pad"
-                        },
-                        (error, result) => {
+                let cld_upload_stream = cloudinary.uploader.upload_stream(
+                    {
+                        folder: "sneak_pad"
+                    },
+                    (error, result) => {
 
-                            if (result) {
-                                resolve(result);
-                            } else {
-                                reject(error);
-                            }
+                        if (result) {
+                            resolve(result);
+                        } else {
+                            reject(error);
                         }
-                    );
+                    }
+                );
 
-                    streamifier.createReadStream(req.file.buffer).pipe(cld_upload_stream);
-                }
+                streamifier.createReadStream(req.files[index].buffer).pipe(cld_upload_stream);
 
             });
 
         };
 
-        const uploadImg = await uploadFromBuffer(req)
+        let imgData = []
 
-        let imgData =
-        {
-            img_name: uploadImg.public_id,
-            img_url: uploadImg.url
+        for (let i = 0; i < req.files.length; i++) {
+            let uploadedImg = await uploadFromBuffer(req, i);
+            console.log(uploadedImg)
+            let imgResult = {
+                img_name: uploadedImg.public_id,
+                img_url: uploadedImg.url
+            }
+            imgData.push(imgResult)
         }
 
         // create new products and save
@@ -234,7 +156,6 @@ router.post('/addProducts', upload.single("image"), async (req, res) => {
         console.log("Products Successfully added! " + findProduct)
 
         res.redirect("/products")
-        // res.json(findProduct)
 
     } catch (error) {
         console.log(error)
@@ -276,9 +197,9 @@ router.post('/addVariants/:id', async (req, res) => {
 
         await findProduct.save()
 
-        res.json(findProduct)
-
         console.log("Variants Successfully added! " + findProduct)
+
+        res.json(findProduct)
 
     } catch (error) {
         console.log(error)
@@ -344,18 +265,23 @@ router.delete('/delProduct/:id', async (req, res) => {
 
         const id = req.params.id
 
+        const products = await products_data.findById({ _id: id })
+
+        for (images of products.product_img) {
+            const toDelete = await cloudinary.uploader.destroy(images.img_name)
+            console.log("Successfuly delted: " + toDelete)
+        }
+
         const delProduct = await products_data.findByIdAndDelete({ _id: id })
         await product_variants.deleteMany({ _id: delProduct.variants })
-        res.json(delProduct)
 
         console.log("Deleted Product: " + delProduct)
+        res.json(delProduct)
 
     } catch (error) {
         console.log(error)
         console.log("DELETE, delete product route error!")
     }
-
-
 })
 
 // DELETE VARIANTS ROUTE
@@ -380,134 +306,88 @@ router.delete('/delVariant/:id', async (req, res) => {
 
 module.exports = router;
 
-// -------------OLD CODE BACKUP----------------------------//
+//--------------------------------------------------------------------------
 
-// // List all products
+// TEST ROUTES FOR FEATURES REFERENCE !!!
 
-// router.get('/', async (req, res, next) => {
-
-//     const productData = await products_data.find()
-//         .catch(err => {
-//             console.log("Server Error")
-//             console.log(err)
-//         })
-//     res.send(productData)
-
-// })
-
-// // List all product variants
-
-// router.get('/variants', async (req, res, next) => {
-
-//     const productVariants = await product_variants.find()
-//         .catch(err => {
-//             console.log("Server Error")
-//             console.log(err)
-//         })
-//     res.send(productVariants)
-// })
-
-
-// // Show specific product
-
-// router.get('/:id', async (req, res) => {
-
+// router.post('/test', upload.single("image"), (req, res) => {
 //     try {
+//         console.log("route reached!")
+//         console.log(req.file)
+//         console.log('////////////////////////////////////////////////////')
 
-//         const id = req.params.id;
-//         let data = [];
+//         if (req.file) {
+//             let cld_upload_stream = cloudinary.uploader.upload_stream({ folder: "sneak_pad" },
+//                 function (error, result) {
+//                     console.log(error, result);
+//                 });
 
-//         let getProduct = new Promise((resolve, reject) => {
-//             resolve(data["product"] = products_data.findById(id))
-//         })
-
-//         let getVariant = new Promise((resolve, reject) => {
-//             resolve(product_variants.find({ variant_id: id }))
-//         })
-
-//         Promise.all([getProduct, getVariant]).then((data) => res.json(data))
+//             streamifier.createReadStream(req.file.buffer).pipe(cld_upload_stream);
+//         }
 
 //     } catch (error) {
 //         console.log(error)
-//         console.log("Oh no! Server Error!")
-//     }
-
-// })
-
-// // Add new product
-
-// router.post('/addProducts', async (req, res) => {
-
-//     try {
-
-//         console.log(req.body)
-
-//         const newProduct = new products_data(
-//             req.body
-//         )
-
-//         let variantData = [
-//             // req.body
-
-//             {
-//                 variant_size: "US_8",
-//                 variant_price: 999
-//             }
-
-//         ]
-
-//         const newVariants = product_variants(variantData)
-
-//         newProduct.variants.push(newVariants)
-//         // await newProduct.save()
-
-//         console.log(newVariants)
-//         // console.log(newProduct)
-
-//         res.redirect('/products')
-
-//     } catch (error) {
-//         console.log("add products route error")
-//         console.log(error)
-//     }
-
-// })
-
-// // Edit product
-
-// router.put('/editProducts/:id', async (req, res) => {
-
-//     const id = req.params.id
-
-//     await products_data.findByIdAndUpdate(
-//         { _id: id },
-//         { $set: req.body }
-//     )
-//         .then(data => {
-//             console.log(data)
-//         })
-//         .catch(err => {
-//             console.log("Server Error")
-//             console.log(err)
-//         })
-// })
-
-// // Delete product
-
-// router.delete('/delete/:id', async (req, res) => {
-
-//     try {
-
-//         const id = req.params.id;
-
-//         await products_data.findByIdAndDelete(id)
-//         await product_variants.deleteMany({ variant_id: id })
-
-//     } catch (error) {
-
-//         console.log("Delete Route Error")
-//         console.log(error)
-
+//         console.log("test route error")
 //     }
 // })
 
+// // ANOTHER TEST ROUTE
+
+// router.post('/test1', upload.array("image"), async (req, res) => {
+
+//     let uploadFromBuffer = (req, index) => {
+
+//         return new Promise((resolve, reject) => {
+
+//             let cld_upload_stream = cloudinary.uploader.upload_stream(
+//                 {
+//                     folder: "sneak_pad"
+//                 },
+//                 (error, result) => {
+
+//                     if (result) {
+//                         resolve(result);
+//                     } else {
+//                         reject(error);
+//                     }
+//                 }
+//             );
+
+//             streamifier.createReadStream(req.files[index].buffer).pipe(cld_upload_stream);
+
+//         });
+
+//     };
+
+//     let imgData = []
+
+//     for (let i = 0; i < req.files.length; i++) {
+//         let uploadedImg = await uploadFromBuffer(req, i);
+//         console.log(uploadedImg)
+//         let imgResult = {
+//             img_name: uploadedImg.public_id,
+//             img_url: uploadedImg.url
+//         }
+//         imgData.push(imgResult)
+//     }
+
+//     console.log(imgData)
+
+//     let variants = JSON.parse(req.body.variantData)
+
+//     // console.log(req.files)
+//     console.log(variants)
+//     res.json(req.body)
+
+//     // console.log(...req.files)
+
+// })
+
+// // IMAGE DELETE TEST ROUTE
+
+// router.post("/delImage", async (req, res) => {
+//     const toDelete = await cloudinary.uploader.destroy("sneak_pad/kve5jti6ns6fqukaw85j")
+//     console.log(toDelete)
+//     // res.send("Delete Image route reached")
+//     res.json(toDelete)
+// })

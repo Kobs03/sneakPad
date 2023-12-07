@@ -28,11 +28,11 @@ const products = new Schema({
         {
             img_name: {
                 type: String,
-                required: false,
+                required: true,
             },
             img_url: {
                 type: String,
-                required: false,
+                required: true,
             }
         }
     ],

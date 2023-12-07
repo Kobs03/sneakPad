@@ -1,22 +1,29 @@
 <template>
-  <nav>
-    <router-link to="/">Home</router-link> |
-    <router-link to="/products">Products</router-link> |
-    <router-link to="/products/addProducts">Add products</router-link> |
-  </nav>
+  <div class="topnav">
+    <div class="logo">
+      <router-link to="/"> <h1>Sneak Pad</h1></router-link>
+    </div>
+
+    <div class="menus">
+      <router-link to="/products">Products</router-link>
+      <router-link to="/products/addProducts">Add products</router-link>
+      <input type="text" placeholder="Search.." />
+      <router-link to="">Cart</router-link>
+    </div>
+  </div>
 
   <RouterView />
 </template>
 
 <script>
 import { items } from "./modules/items";
-import axios from "axios"
+import axios from "axios";
 
 export default {
   data() {
     return {
       items,
-      productItems:[],
+      productItems: [],
     };
   },
 
@@ -36,6 +43,30 @@ export default {
   mounted() {
     this.getAllProducts();
   },
-
 };
 </script>
+
+<style scoped>
+.topnav {
+  width: auto;
+  height: 100px;
+  display: flex;
+  background: peachpuff;
+}
+
+.logo {
+  width: 80%;
+  padding: 10px;
+  display: flex;
+  justify-content: start;
+  align-items: center;
+}
+
+.menus {
+  width: 20%;
+  padding: 10px;
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+}
+</style>

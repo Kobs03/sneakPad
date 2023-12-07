@@ -1,38 +1,46 @@
 <template>
-  <h1>All Products:</h1>
-  <hr />
-  <br />
-  <div v-for="(item, key) in items.products" :key="key">
-    <div class="card">
-      Product Id: {{ item._id }} <br />
-      Name:<router-link :to="`/products/${item._id}`">{{
-        item.product_name
-      }}</router-link>
-      <br />
-      Brand: {{ item.product_brand }} <br />
-      Description: {{ item.product_description }} <br />
-      Category: {{ item.product_category }} <br />
-      variants: <br />
+  <div class="container_main">
+    <div class="filter">
+      <div class="filter_options">
+        <div class="header">
+          <h3>Filters</h3>
+        </div>
+        <div class="collapsible">Shoes +</div>
+        <div class="collapsible">Gender +</div>
+        <div class="collapsible">Apparels +</div>
+        <div class="collapsible">Sizes +</div>
+      </div>
+    </div>
 
-      <div class="variants" v-for="variant in item.variants" :key="variant">
-        Id : {{ variant._id }} <br />
-          Product Id reference: {{ variant.products }} <br />
-          User-Category: {{ variant.user_category }} <br />
-          Size: {{ variant.variant_size }} <br />
-          Price: ${{ variant.variant_price }} <br />
-          Stocks: {{ variant.number_of_stocks }} <br />
-          <br />
+    <div class="product_area">
+      <div class="header">
+        <h1>All Products ({{ items.products.length }} Results)</h1>
       </div>
 
-      <br />
-      <router-link :to="`/products/editProduct/${item._id}`">
-        <button>Edit</button>
-      </router-link>
-      &nbsp;
-      <button @click="deleteProduct(item._id)">Delete</button>
+      <hr />
+      <div class="products_container">
+        <div class="card" v-for="(item, key) in items.products" :key="key">
+          <div class="images" v-for="images in item.product_img" :key="images">
+            <img :src="images.img_url" alt="" /><br />
+          </div>
+
+          <div>
+            <router-link :to="`/products/${item._id}`">
+              <h3>{{ item.product_name }}</h3>
+            </router-link>
+            <h4>{{ item.product_brand }}</h4>
+          </div>
+
+          <!-- <div>
+            <router-link :to="`/products/editProduct/${item._id}`">
+              <button>Edit</button>
+            </router-link>
+            &nbsp;
+            <button @click="deleteProduct(item._id)">Delete</button>
+          </div> -->
+        </div>
+      </div>
     </div>
-    <hr />
-    <br />
   </div>
 </template>
 
@@ -48,12 +56,13 @@ export default {
   },
 
   methods: {
-    deleteProduct(id) {
+    async deleteProduct(id) {
       try {
-        axios.delete(`http://localhost:8080/products/delProduct/${id}`);
-        this.$router.push("/products").then(() => {
-          this.$router.go();
-        });
+        await axios
+          .delete(`http://localhost:8080/products/delProduct/${id}`)
+          .then(() => {
+            location.reload();
+          });
       } catch (error) {
         console.log(error);
       }
@@ -61,3 +70,7 @@ export default {
   },
 };
 </script>
+
+<style lang="scss">
+@import url("../assets/styles/sass/styles.scss");
+</style>

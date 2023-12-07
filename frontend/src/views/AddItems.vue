@@ -103,7 +103,6 @@ export default {
       newBrand: "",
       newDescription: "",
       newCategory: "",
-      newUserCategory: "",
       variantsContainer: [],
       file: [],
     };
@@ -130,15 +129,15 @@ export default {
         // formData.append("image", this.file);
         formData.append("product_name", this.newName);
         formData.append("product_brand", this.newBrand);
-        formData.append("product_description", this.newBrand);
-        formData.append("product_category", this.newBrand);
+        formData.append("product_description", this.newDescription);
+        formData.append("product_category", this.newCategory);
 
         // appending array using stringify then parse in the backend
 
         formData.append("variantData", JSON.stringify(this.variantsContainer));
 
         this.items.products = await axios.post(
-          "http://localhost:8080/products/test1",
+          "http://localhost:8080/products/addProducts",
           formData
         );
         console.log(formData.entries);
