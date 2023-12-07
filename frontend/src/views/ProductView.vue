@@ -1,25 +1,55 @@
 <template>
-  <h1>Product Details</h1>
-  <hr />
-  <br />
+  <div class="main_container">
+    <div class="side1">
+      <div class="image1" v-for="img in itemDetails.product_img" :key="img">
+        <img :src="img.img_url" alt="" />
+      </div>
 
-  Product Id: {{ itemDetails._id }} <br />
-  Product Id: {{ itemDetails._id }} <br />
-  Name:{{ itemDetails.product_name }}
-  <br />
-  Brand: {{ itemDetails.product_brand }} <br />
-  Description: {{ itemDetails.product_description }} <br />
-  Category: {{ itemDetails.product_category }} <br />
-  variants: <br />
+      <div class="description">
+        Description:
+        <p>
+          Lorem ipsum dolor, sit amet consectetur adipisicing elit. Aspernatur
+          sequi distinctio, sit nisi sunt asperiores excepturi sapiente,
+          repellendus fugit beatae vero. Accusantium incidunt, quis fugiat totam
+          aperiam libero maxime quo.
+        </p>
+      </div>
+    </div>
 
-  <div class="variants" v-for="variant in itemDetails.variants" :key="variant">
-    Id : {{ variant._id }} <br />
-    Product Id reference: {{ variant.products }} <br />
-    User-Category: {{ variant.user_category }} <br />
-    Size: {{ variant.variant_size }} <br />
-    Price: ${{ variant.variant_price }} <br />
-    Stocks: {{ variant.number_of_stocks }} <br />
-    <br />
+    <div class="side2">
+      <div class="item_details">
+        <div class="base">
+          <h1>{{ itemDetails.product_name }}</h1>
+          Brand: {{ itemDetails.product_brand }} <br /><br />
+          Price : <span v-if="variantPrice">P </span>{{ variantPrice
+          }}<br /><br />
+          In Stock: {{ variantStocks }} <br /><br />
+          Available sizes:
+          <hr />
+
+          <div class="variants">
+            <button
+              class="sizeButtons"
+              v-for="vars in itemDetails.variants"
+              :key="vars"
+            >
+              <div
+                @click="showPrice(vars.variant_price, vars.number_of_stocks)"
+              >
+                {{ vars.variant_size }}
+              </div>
+            </button>
+          </div>
+          <hr />
+        </div>
+        <div class="order">
+          <div class="buttons">
+            <button>Buy now</button>
+            <button>Add to Cart</button>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -31,6 +61,8 @@ export default {
     return {
       itemDetails: [],
       productId: this.$route.params.id,
+      variantPrice: "",
+      variantStocks: "",
     };
   },
 
@@ -44,6 +76,13 @@ export default {
       } catch (error) {
         console.error(error);
       }
+    },
+
+    // Button functions
+
+    showPrice(price, stocks) {
+      this.variantPrice = price;
+      this.variantStocks = stocks;
     },
   },
 

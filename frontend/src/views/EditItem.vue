@@ -301,12 +301,3 @@ export default {
   },
 };
 </script>
-
-<style>
-.variants {
-  width: 200px;
-  border: 1px solid black;
-  padding: 10px;
-  margin: 10px;
-}
-</style>
