@@ -1,2 +1,9 @@
 @import url(_showProducts.scss);
 @import url(_productView.scss);
+
+// Browser css default reset
+
+body {
+    margin: 0;
+    padding: 0;
+}

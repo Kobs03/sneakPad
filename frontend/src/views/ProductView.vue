@@ -21,7 +21,7 @@
         <div class="base">
           <h1>{{ itemDetails.product_name }}</h1>
           Brand: {{ itemDetails.product_brand }} <br /><br />
-          Price : <span v-if="variantPrice">P </span>{{ variantPrice
+          Price : <span v-if="variantPrice">₱ </span>{{ variantPrice
           }}<br /><br />
           In Stock: {{ variantStocks }} <br /><br />
           Available sizes:

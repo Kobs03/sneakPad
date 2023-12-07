@@ -6,6 +6,7 @@
           <h3>Filters</h3>
         </div>
         <div class="collapsible">Shoes +</div>
+        <div class="collapsible">Brands +</div>
         <div class="collapsible">Gender +</div>
         <div class="collapsible">Apparels +</div>
         <div class="collapsible">Sizes +</div>
@@ -19,9 +20,9 @@
 
       <hr />
       <div class="products_container">
-        <div class="card" v-for="(item, key) in items.products" :key="key">
-          <div class="images" v-for="images in item.product_img" :key="images">
-            <img :src="images.img_url" alt="" /><br />
+        <div class="card" v-for="item in items.products" :key="item">
+          <div class="images">
+            <img :src="item.product_img[0].img_url" alt="" />
           </div>
 
           <div>

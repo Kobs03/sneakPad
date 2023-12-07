@@ -256,7 +256,6 @@ router.put('/editVariant/:id', async (req, res) => {
 
 })
 
-
 // DELETE PRODUCTS ROUTE
 
 router.delete('/delProduct/:id', async (req, res) => {
