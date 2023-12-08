@@ -2,6 +2,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
 const bodyParser = require('body-parser');
+const app = express();
 require('dotenv').config()
 
 let mongo_uri = process.env.MONGO_URI
@@ -19,8 +20,6 @@ const dbConnect = async () => {
 }
 
 dbConnect()
-
-const app = express();
 
 //cors 
 
@@ -46,6 +45,10 @@ app.get('/', async (req, res) => {
 const products = require('./routes/products')
 
 app.use('/products', products)
+
+app.use((req, res) => {
+    res.status(404).send("PAGE NOT FOUND!")
+})
 
 app.listen(port, () => {
     console.log("listening to port " + port)

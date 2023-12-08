@@ -32,13 +32,13 @@
             <h4>{{ item.product_brand }}</h4>
           </div>
 
-          <!-- <div>
+          <div>
             <router-link :to="`/products/editProduct/${item._id}`">
               <button>Edit</button>
             </router-link>
             &nbsp;
             <button @click="deleteProduct(item._id)">Delete</button>
-          </div> -->
+          </div>
         </div>
       </div>
     </div>

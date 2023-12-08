@@ -46,11 +46,6 @@ const products = new Schema({
 
 })
 
-// products.post('findOneAndDelete', async (data) => {
-//     console.log(data)
-//     console.log('post data delete!')
-// })
-
 const products_data = mongoose.model('Products', products);
 
 module.exports = { products_data } 
