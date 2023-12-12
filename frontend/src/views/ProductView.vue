@@ -8,10 +8,7 @@
       <div class="description">
         Description:
         <p>
-          Lorem ipsum dolor, sit amet consectetur adipisicing elit. Aspernatur
-          sequi distinctio, sit nisi sunt asperiores excepturi sapiente,
-          repellendus fugit beatae vero. Accusantium incidunt, quis fugiat totam
-          aperiam libero maxime quo.
+          {{ itemDetails.product_description }}
         </p>
       </div>
     </div>
@@ -36,7 +33,12 @@
               <div
                 @click="showPrice(vars.variant_price, vars.number_of_stocks)"
               >
-                {{ vars.variant_size }}
+                <div v-if="(itemDetails.product_category = 'apparel')">
+                  {{ vars.apparel_size }}
+                </div>
+                <div v-if="(itemDetails.product_category = 'shoes')">
+                  {{ vars.variant_size }}
+                </div>
               </div>
             </button>
           </div>

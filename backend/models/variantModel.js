@@ -9,8 +9,11 @@ const variants = new Schema({
     },
 
     variant_size: {
+        type: Number,
+    },
+
+    apparel_size: {
         type: String,
-        required: true,
     },
 
     variant_price: {

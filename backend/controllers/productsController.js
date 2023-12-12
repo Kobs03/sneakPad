@@ -35,26 +35,12 @@ const productController = {
 
             const finalRes = await products_data.find({
                 variants: { $in: productIds }
-            })
+            }).populate("variants")
 
             console.log(productIds)
             console.log(finalRes)
 
             res.json(finalRes)
-
-            // req.query
-
-            // const allVariants = await products_data.find(
-            //     {
-            //         variants: { $in: ['657175e51ad1bc3df1ef46e8'] }
-            //     }
-            // ).populate('variants')
-
-            // console.log(allVariants)
-
-            // // console.log(req.query)
-
-            // res.json(allVariants)
 
         }
     },

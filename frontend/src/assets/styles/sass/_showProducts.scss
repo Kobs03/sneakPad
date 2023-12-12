@@ -7,21 +7,22 @@
 
     .filter {
         width: 20%;
-        height: 700px;
+        height: auto;
         margin: 10px;
         margin-top: 40px;
         display: flex;
         justify-content: center;
-        align-items: center;
-        border: 1px solid black;
-        border-radius: 10px;
+        align-items: start;
 
         .filter_options {
             width: 90%;
-            height: 90%;
+            height: auto;
+            padding: 20px;
             display: flex;
             justify-content: start;
             flex-direction: column;
+            border: 1px solid black;
+            border-radius: 10px;
 
             .header {
                 height: 5%;

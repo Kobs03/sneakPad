@@ -11,7 +11,6 @@
       <router-link to="">Cart</router-link>
     </div>
   </div>
-
   <RouterView />
 </template>
 
@@ -23,23 +22,17 @@ export default {
   data() {
     return {
       items,
-      productItems: [],
     };
   },
 
   methods: {
     async getAllProducts() {
-      try {
-        fetchApi(
-          "get",
-          "http://localhost:8080/products",
-          null,
-          (res) => (this.items.products = res.data)
-        );
-        this.productItems = this.items.products;
-      } catch (error) {
-        console.log(error);
-      }
+      fetchApi(
+        "get",
+        "http://localhost:8080/products",
+        null,
+        (res) => (this.items.products = res.data)
+      );
     },
   },
 

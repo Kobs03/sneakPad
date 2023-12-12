@@ -9,6 +9,22 @@
 
         <div class="collapsible">Shoes +</div>
 
+        <div
+          class="shoes-type"
+          v-for="products in items.products"
+          :key="products"
+        >
+          <div v-if="products.shoes_type != 'null'">
+            <input
+              type="checkbox"
+              id="shoes-type"
+              name="shoes_type="
+              :value="products.shoes_type"
+            />
+            {{ products.shoes_type }}
+          </div>
+        </div>
+
         <!-------------------PRODUCT_BRANDS------------------------>
 
         <div class="collapsible">Brands +</div>
@@ -45,26 +61,35 @@
 
         <div class="collapsible">Apparels +</div>
 
+        <div
+          class="selections"
+          v-for="products in items.products"
+          :key="products"
+        >
+          <div v-if="products.apparel_type != 'null'">
+            <input
+              type="checkbox"
+              id="apparel_type"
+              name="apparel_type="
+              :value="products.apparel_type"
+            />
+            {{ products.apparel_type }}
+          </div>
+        </div>
+
         <!-------------------PRODUCT_SIZES------------------------>
 
-        <div class="collapsible">Sizes +</div>
+        <div class="collapsible" @click="sizeFilter">Sizes +</div>
 
-        <div v-for="products in items.products" :key="products">
-          <div
-            class="size_container"
-            v-for="sizes in products.variants"
-            :key="sizes"
-          >
-            <div class="sizes">
-              <input
-                type="checkbox"
-                id="sizes"
-                name="variant_size="
-                :value="sizes.variant_size"
-              />
-
-              {{ sizes.variant_size }}
-            </div>
+        <div class="size_container" v-for="sizes in sizeDatas" :key="sizes">
+          <div class="sizes">
+            <input
+              type="checkbox"
+              id="sizes"
+              name="variant_size="
+              :value="sizes"
+            />
+            US {{ sizes }}
           </div>
         </div>
       </div>
@@ -111,16 +136,15 @@
 
 <script>
 import { items } from "../modules/items";
-import { fetchApi } from "../controllers/controller";
+import { fetchApi, removeDuplicate } from "../controllers/controller";
 
 export default {
   data() {
     return {
       items,
-      userCategoryData: ["Mens", "Womens", "Kids", "Unisex"],
-      sizeDatas: [],
-      sizesDatas: [],
       query: [],
+      sizeDatas: [],
+      userCategoryData: ["Mens", "Womens", "Kids", "Unisex"],
     };
   },
 
@@ -132,6 +156,27 @@ export default {
         null,
         () => location.reload()
       );
+    },
+
+    // FILTER SECTION METHODS
+
+    sizeFilter() {
+      console.log("SIZES DATA!");
+      for (const test of this.items.products) {
+        for (const vars of test.variants) {
+          if (vars.variant_size != undefined)
+            this.sizeDatas.push(vars.variant_size);
+        }
+      }
+
+      console.log(this.sizeDatas);
+
+      const filtered = removeDuplicate(this.sizeDatas);
+      this.sizeDatas = filtered;
+      this.sizeDatas.sort(function (a, b) {
+        return a - b;
+      });
+      console.log("FINAL RES : " + this.sizeDatas);
     },
   },
 };

@@ -34,25 +34,13 @@ export default {
   },
 
   methods: {
-    test() {
-      this.queryString = this.query[0];
-
-      for (let i = 1; i < this.query.length; i++) {
-        this.queryString += `&${this.query[i]}`;
-      }
-
-      return (this.axiosPost += this.queryString);
-    },
-
     async filterData() {
-      const items = await axios.get("http://localhost:8080/products?");
+      const items = await axios.get(
+        "http://localhost:8080/products/var?variant_size=12&variant_size=8"
+      );
       this.items.variants = items.data;
       this.items.products = this.items.variants;
     },
-  },
-
-  mounted() {
-    this.test();
   },
 };
 </script>
