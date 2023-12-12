@@ -17,7 +17,7 @@
 
 <script>
 import { items } from "./modules/items";
-import axios from "axios";
+import { fetchApi } from "./controllers/controller";
 
 export default {
   data() {
@@ -29,10 +29,13 @@ export default {
 
   methods: {
     async getAllProducts() {
-      //using axios
       try {
-        const items = await axios.get("http://localhost:8080/products");
-        this.items.products = items.data;
+        fetchApi(
+          "get",
+          "http://localhost:8080/products",
+          null,
+          (res) => (this.items.products = res.data)
+        );
         this.productItems = this.items.products;
       } catch (error) {
         console.log(error);

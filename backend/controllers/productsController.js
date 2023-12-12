@@ -6,10 +6,13 @@ const { uploadFromBuffer, deleteUpload } = require('../cloudinary')
 const productController = {
 
     getProducts() {
-        return async (req, res) => {
+        return async (req, res, next) => {
 
             const allProducts = await products_data.find()
                 .populate('variants')
+
+            // console.log(req.query)
+            // console.log(allProducts)
 
             res.json(allProducts)
 
@@ -19,9 +22,39 @@ const productController = {
     getVariants() {
         return async (req, res) => {
 
-            const allVariants = await product_variants.find()
+            req.query
 
-            res.json(allVariants)
+            const allVariants = await product_variants.find(req.query)
+                .populate('products')
+
+            let productIds = []
+
+            for (results of allVariants) {
+                productIds.push(results._id)
+            }
+
+            const finalRes = await products_data.find({
+                variants: { $in: productIds }
+            })
+
+            console.log(productIds)
+            console.log(finalRes)
+
+            res.json(finalRes)
+
+            // req.query
+
+            // const allVariants = await products_data.find(
+            //     {
+            //         variants: { $in: ['657175e51ad1bc3df1ef46e8'] }
+            //     }
+            // ).populate('variants')
+
+            // console.log(allVariants)
+
+            // // console.log(req.query)
+
+            // res.json(allVariants)
 
         }
     },
@@ -105,43 +138,37 @@ const productController = {
     addVariants() {
         return async (req, res) => {
 
-            try {
-                id = req.params.id
+            id = req.params.id
 
-                const findProduct = await products_data.findById(
-                    {
-                        _id: id
-                    }
+            const findProduct = await products_data.findById(
+                {
+                    _id: id
+                }
+            )
+
+            const variantsArray = req.body.variantData
+
+            // Iterate the objects in the array then save and push
+
+            for (const object of variantsArray) {
+
+                object.products = findProduct._id
+
+                const newVariant = await product_variants(
+                    object
                 )
 
-                const variantsArray = req.body.variantData
-
-                // Iterate the objects in the array then save and push
-
-                for (const object of variantsArray) {
-
-                    object.products = findProduct._id
-
-                    const newVariant = await product_variants(
-                        object
-                    )
-
-                    await newVariant.save()
-                    await findProduct.variants.push(newVariant)
-                }
-
-                // save the updated new product
-
-                await findProduct.save()
-
-                console.log("Variants Successfully added! " + findProduct)
-
-                res.json(findProduct)
-
-            } catch (error) {
-                console.log(error)
-                console.log("ADD VARIANTS ROUTE ERROR!")
+                await newVariant.save()
+                await findProduct.variants.push(newVariant)
             }
+
+            // save the updated new product
+
+            await findProduct.save()
+
+            console.log("Variants Successfully added! " + findProduct)
+
+            res.json(findProduct)
 
         }
     },
@@ -156,9 +183,9 @@ const productController = {
                 { $set: req.body }
             )
 
-            res.json(updateProduct)
-
             console.log("EDIT PRODUCT SUCCESSFUL")
+
+            res.json(updateProduct)
 
         }
     },
@@ -173,9 +200,9 @@ const productController = {
                 { $set: req.body }
             )
 
-            res.json(updateVariant)
-
             console.log("Edited successfully")
+
+            res.json(updateVariant)
 
         }
     },
@@ -195,6 +222,7 @@ const productController = {
             await product_variants.deleteMany({ _id: delProduct.variants })
 
             console.log("Deleted Product: " + delProduct)
+
             res.json(delProduct)
 
         }
@@ -206,9 +234,10 @@ const productController = {
             const id = req.params.id
 
             const delVariant = await product_variants.findOneAndDelete({ _id: id })
-            res.json(delVariant)
 
             console.log("Deleted Variant " + delVariant)
+
+            res.json(delVariant)
 
         }
     },

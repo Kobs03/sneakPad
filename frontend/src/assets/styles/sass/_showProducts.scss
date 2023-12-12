@@ -20,6 +20,7 @@
             width: 90%;
             height: 90%;
             display: flex;
+            justify-content: start;
             flex-direction: column;
 
             .header {
@@ -33,12 +34,19 @@
 
             .collapsible {
                 height: 5%;
-                margin: 15px;
-                padding: 10px;
+                width: 100%;
                 display: flex;
                 justify-content: start;
                 align-items: center;
                 background-color: rgb(175, 174, 174);
+            }
+
+            .selections {
+                width: 100%;
+                height: auto;
+                display: flex;
+                justify-content: start;
+                flex-direction: start;
             }
         }
     }

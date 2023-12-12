@@ -24,6 +24,14 @@ const products = new Schema({
         required: true,
     },
 
+    shoes_type: {
+        type: String,
+    },
+
+    apparel_type: {
+        type: String,
+    },
+
     product_img: [
         {
             img_name: {

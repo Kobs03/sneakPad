@@ -8,7 +8,7 @@ require('dotenv').config()
 let mongo_uri = process.env.MONGO_URI
 let port = process.env.PROD_PORT
 
-//database stuffs
+// DATABASE STUFFS
 
 const dbConnect = async () => {
     try {
@@ -21,7 +21,7 @@ const dbConnect = async () => {
 
 dbConnect()
 
-//cors 
+// CORS MIDDLEWARE
 
 app.use(function (req, res, next) {
     res.header("Access-Control-Allow-Origin", "*");
@@ -30,13 +30,13 @@ app.use(function (req, res, next) {
     next();
 })
 
-// body-parser
+// BODY-PARSER
 
 app.use(bodyParser.json());
 
-//routes 
+// ROUTES 
 
-// Default route
+// HOME ROUTE
 
 app.get('/', async (req, res) => {
     res.send("Hello World")

@@ -34,6 +34,18 @@
     <br />
     <br />
 
+    <div v-if="newCategory === 'shoes'">
+      Shoes Type : <input type="text" v-model="newShoesType" />
+      <br />
+      <br />
+    </div>
+
+    <div v-if="newCategory === 'apparels'">
+      Apparel Type : <input type="text" v-model="newApparelType" />
+      <br />
+      <br />
+    </div>
+
     <!-- IMAGE UPLOAD FORM !!! -->
 
     <input type="file" name="image" id="" @change="onFileSelected" multiple />
@@ -90,8 +102,8 @@
 </template>
 
 <script>
-import axios from "axios";
 import { items } from "../modules/items";
+import { fetchApi } from "../controllers/controller";
 
 export default {
   data() {
@@ -101,6 +113,8 @@ export default {
       newBrand: "",
       newDescription: "",
       newCategory: "",
+      newShoesType: null,
+      newApparelType: null,
       variantsContainer: [],
       file: [],
     };
@@ -121,22 +135,27 @@ export default {
     async addItems() {
       const formData = new FormData();
 
-      for (let resImg of this.file) {
-        formData.append("image", resImg);
-      }
-
       formData.append("product_name", this.newName);
       formData.append("product_brand", this.newBrand);
       formData.append("product_description", this.newDescription);
       formData.append("product_category", this.newCategory);
+      formData.append("shoes_type", this.newShoesType);
+      formData.append("apparel_type", this.newApparelType);
+
+      for (let resImg of this.file) {
+        formData.append("image", resImg);
+      }
 
       // appending array using stringify then parse in the backend
 
       formData.append("variantData", JSON.stringify(this.variantsContainer));
 
-      this.items.products = await axios
-        .post("http://localhost:8080/products/addProducts", formData)
-        .catch((error) => console.log(error));
+      fetchApi(
+        "post",
+        "http://localhost:8080/products/addProducts",
+        formData,
+        (res) => (this.items.products = res.data)
+      );
 
       console.log(formData.entries);
       this.$router.push("/products").then(() => this.$router.go());
