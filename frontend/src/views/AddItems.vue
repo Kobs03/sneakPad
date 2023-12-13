@@ -168,8 +168,14 @@ export default {
       formData.append("product_brand", this.newBrand);
       formData.append("product_description", this.newDescription);
       formData.append("product_category", this.newCategory);
-      formData.append("shoes_type", this.newShoesType);
-      formData.append("apparel_type", this.newApparelType);
+
+      if (this.newShoesType != "null") {
+        formData.append("shoes_type", this.newShoesType);
+      }
+
+      if (this.newApparelType != "null") {
+        formData.append("apparel_type", this.newApparelType);
+      }
 
       for (let resImg of this.file) {
         formData.append("image", resImg);

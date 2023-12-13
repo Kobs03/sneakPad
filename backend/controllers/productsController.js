@@ -5,14 +5,38 @@ const { uploadFromBuffer, deleteUpload } = require('../cloudinary')
 
 const productController = {
 
+
+    // ------------ CODE TEST ------------
+
+    codeTesting() {
+        return async (req, res) => {
+
+            // if (req.body) {
+            //     for (key in req.body) {
+
+            //         if (Object.prototype.hasOwnProperty.call(req.body, key)) {
+            //             const value = req.body[key]
+            //             const lowercaseValue = value.toLowerCase()
+            //             req.body[key] = lowercaseValue;
+            //         }
+
+            //     }
+            //     console.log(req.body)
+            //     res.json(req.body)
+            // }
+
+            res.json(req.body)
+        }
+    },
+
+
+    // ------------ GET ROUTES ------------
+
     getProducts() {
         return async (req, res, next) => {
 
             const allProducts = await products_data.find()
                 .populate('variants')
-
-            // console.log(req.query)
-            // console.log(allProducts)
 
             res.json(allProducts)
 
@@ -58,30 +82,71 @@ const productController = {
         }
     },
 
+    filterOptions() {
+        return async (req, res) => {
+
+            const filterOptions = {
+                brands: [],
+                shoesType: [],
+                apparelType: [],
+                userCategory: [],
+                sizes: [],
+            }
+
+            const brandsRes = await products_data.distinct("product_brand")
+            const shoesTypeRes = await products_data.distinct("shoes_type")
+            const apparelRes = await products_data.distinct("apparel_type")
+            const genderRes = await product_variants.distinct("user_category")
+            const sizesRes = await product_variants.distinct("variant_size")
+
+
+            filterOptions.brands.push(...brandsRes)
+            filterOptions.shoesType.push(...shoesTypeRes)
+            filterOptions.apparelType.push(...apparelRes)
+            filterOptions.userCategory.push(...genderRes)
+            filterOptions.sizes.sort((a, b) => { return a - b }).push(...sizesRes)
+
+            res.json(filterOptions)
+
+            // filter test
+
+            // const sizeOrder = { "XS": 0, "S": 1, "M": 2, "L": 3, "XL": 4 };
+
+            // const testData = await products_data.findById("insert id here").populate("variants")
+            // const toSort = []
+
+            // for (const data of testData.variants) {
+            //     toSort.push(data)
+            // }
+
+            // if (testData.apparel_type != null) {
+            //     toSort.sort(function (a, b) {
+            //         return sizeOrder[a.apparel_size] - sizeOrder[b.apparel_size]
+            //     })
+            //     console.log("SORTED SUCCESSFULLY")
+            // } else {
+            //     console.log("NOTHING TO SORT!")
+            // }
+
+            // res.json(toSort)
+
+        }
+    },
+
+    // ------------ POST ROUTES ------------
+
+
     addProducts() {
         return async (req, res) => {
 
-            let imgData = []
-
-            for (let i = 0; i < req.files.length; i++) {
-                let uploadedImg = await uploadFromBuffer(req, i);
-                console.log(uploadedImg)
-                let imgResult = {
-                    img_name: uploadedImg.public_id,
-                    img_url: uploadedImg.url
-                }
-                imgData.push(imgResult)
-            }
-
             // create new products and save
-
-            req.body.product_img = imgData
 
             const newProduct = new products_data(
                 req.body,
             )
 
             await newProduct.save()
+
 
             // find for id reference of newProducts
 
@@ -90,6 +155,25 @@ const productController = {
                     _id: newProduct._id
                 }
             )
+
+            // IMAGE UPLOAD !!!
+
+            if (findProduct) {
+                let imgData = []
+
+                for (let i = 0; i < req.files.length; i++) {
+                    let uploadedImg = await uploadFromBuffer(req, i);
+                    console.log(uploadedImg)
+                    let imgResult = {
+                        img_name: uploadedImg.public_id,
+                        img_url: uploadedImg.url
+                    }
+                    imgData.push(imgResult)
+                }
+
+                findProduct.product_img.push(...imgData)
+            }
+
 
             // create new variant and store the req.body in test arr, 
 
@@ -106,7 +190,7 @@ const productController = {
                 )
 
                 await newVariant.save()
-                await findProduct.variants.push(newVariant)
+                findProduct.variants.push(newVariant)
             }
 
             // save the updated new product
@@ -159,6 +243,11 @@ const productController = {
         }
     },
 
+    // -------------------------------------
+
+
+    // ------------ PUT ROUTES ------------
+
     editProduct() {
         return async (req, res) => {
 
@@ -192,6 +281,11 @@ const productController = {
 
         }
     },
+
+    // -------------------------------------
+
+
+    // ------------ DELETE ROUTES ------------
 
     deleteProduct() {
         return async (req, res) => {
@@ -227,6 +321,9 @@ const productController = {
 
         }
     },
+
+    // -------------------------------------
+
 }
 
 module.exports = productController

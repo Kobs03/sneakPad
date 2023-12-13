@@ -9,19 +9,15 @@
 
         <div class="collapsible">Shoes +</div>
 
-        <div
-          class="shoes-type"
-          v-for="products in items.products"
-          :key="products"
-        >
-          <div v-if="products.shoes_type != 'null'">
+        <div class="shoes-type" v-for="res of filterDatas.shoesType" :key="res">
+          <div v-if="res.shoes_type != 'null'">
             <input
               type="checkbox"
               id="shoes-type"
               name="shoes_type="
-              :value="products.shoes_type"
+              :value="res.shoes_type"
             />
-            {{ products.shoes_type }}
+            {{ res }}
           </div>
         </div>
 
@@ -29,25 +25,24 @@
 
         <div class="collapsible">Brands +</div>
 
-        <div
-          class="selections"
-          v-for="products in items.products"
-          :key="products"
-        >
+        <div class="selections" v-for="res in filterDatas.brands" :key="res">
           <input
             type="checkbox"
             id="brands"
             name="product_brand="
-            :value="products.product_brand"
+            :value="res.product_brand"
           />
-          {{ products.product_brand }}
+          {{ res }}
         </div>
 
         <!-------------------PRODUCT_BRANDS------------------------>
 
         <div class="collapsible">Gender +</div>
 
-        <div v-for="userCategory in userCategoryData" :key="userCategory">
+        <div
+          v-for="userCategory in filterDatas.userCategory"
+          :key="userCategory"
+        >
           <input
             type="checkbox"
             id="user_category"
@@ -63,25 +58,29 @@
 
         <div
           class="selections"
-          v-for="products in items.products"
-          :key="products"
+          v-for="res in filterDatas.apparelType"
+          :key="res"
         >
-          <div v-if="products.apparel_type != 'null'">
+          <div v-if="res != 'null'">
             <input
               type="checkbox"
               id="apparel_type"
               name="apparel_type="
-              :value="products.apparel_type"
+              :value="res.apparel_type"
             />
-            {{ products.apparel_type }}
+            {{ res }}
           </div>
         </div>
 
         <!-------------------PRODUCT_SIZES------------------------>
 
-        <div class="collapsible" @click="sizeFilter">Sizes +</div>
+        <div class="collapsible">Sizes +</div>
 
-        <div class="size_container" v-for="sizes in sizeDatas" :key="sizes">
+        <div
+          class="size_container"
+          v-for="sizes in filterDatas.sizes"
+          :key="sizes"
+        >
           <div class="sizes">
             <input
               type="checkbox"
@@ -136,15 +135,14 @@
 
 <script>
 import { items } from "../modules/items";
-import { fetchApi, removeDuplicate } from "../controllers/controller";
+import { fetchApi } from "../controllers/controller";
 
 export default {
   data() {
     return {
       items,
       query: [],
-      sizeDatas: [],
-      userCategoryData: ["Mens", "Womens", "Kids", "Unisex"],
+      filterDatas: [],
     };
   },
 
@@ -158,26 +156,18 @@ export default {
       );
     },
 
-    // FILTER SECTION METHODS
-
-    sizeFilter() {
-      console.log("SIZES DATA!");
-      for (const test of this.items.products) {
-        for (const vars of test.variants) {
-          if (vars.variant_size != undefined)
-            this.sizeDatas.push(vars.variant_size);
-        }
-      }
-
-      console.log(this.sizeDatas);
-
-      const filtered = removeDuplicate(this.sizeDatas);
-      this.sizeDatas = filtered;
-      this.sizeDatas.sort(function (a, b) {
-        return a - b;
-      });
-      console.log("FINAL RES : " + this.sizeDatas);
+    getFilterOptions() {
+      fetchApi(
+        "get",
+        "http://localhost:8080/products/filteroptions",
+        null,
+        (res) => (this.filterDatas = res.data)
+      );
     },
+  },
+
+  mounted() {
+    this.getFilterOptions();
   },
 };
 </script>

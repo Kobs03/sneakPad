@@ -2,8 +2,13 @@ const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
 const bodyParser = require('body-parser');
+const { lowercaseMiddleware } = require('../backend/middlewares/middleware')
 const app = express();
 require('dotenv').config()
+
+const multer = require('multer')
+const storage = multer.memoryStorage();
+const upload = multer({ storage: storage });
 
 let mongo_uri = process.env.MONGO_URI
 let port = process.env.PROD_PORT
@@ -32,11 +37,19 @@ app.use(function (req, res, next) {
 
 // BODY-PARSER
 
-app.use(bodyParser.json());
+app.use(bodyParser.json())
 
-// ROUTES 
+// MULTER SETUP
 
-// HOME ROUTE
+app.use(upload.any())
+
+// LOWERCASE MIDDLEWARE
+
+app.use(lowercaseMiddleware)
+
+// ------------ ROUTES ---------------
+
+// DEFAULT ROUTE
 
 app.get('/', async (req, res) => {
     res.send("Hello World")
