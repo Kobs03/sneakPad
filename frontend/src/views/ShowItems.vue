@@ -10,12 +10,12 @@
         <div class="collapsible">Shoes +</div>
 
         <div class="shoes-type" v-for="res of filterDatas.shoesType" :key="res">
-          <div v-if="res.shoes_type != 'null'">
+          <div v-if="res != 'null'">
             <input
               type="checkbox"
               id="shoes-type"
               name="shoes_type="
-              :value="res.shoes_type"
+              :value="res"
             />
             {{ res }}
           </div>
@@ -30,7 +30,7 @@
             type="checkbox"
             id="brands"
             name="product_brand="
-            :value="res.product_brand"
+            :value="res"
           />
           {{ res }}
         </div>
@@ -66,7 +66,7 @@
               type="checkbox"
               id="apparel_type"
               name="apparel_type="
-              :value="res.apparel_type"
+              :value="res"
             />
             {{ res }}
           </div>
@@ -96,14 +96,14 @@
 
     <div class="product_area">
       <div class="header">
-        <!-- <h1>All Products ({{ items.products.length }} Results)</h1> -->
+        <h1>All Products ({{ items.products.length }} Results)</h1>
       </div>
 
       <hr />
       <div class="products_container">
         <div class="card" v-for="item in items.products" :key="item">
           <div class="images" v-if="item.product_img.length">
-            <img :src="item.product_img[0].img_url" alt="product image" />
+            <img src="../assets/images/hanichu.jpg" alt="product image" />
           </div>
 
           <div class="images" v-else>

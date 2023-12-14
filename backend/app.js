@@ -6,6 +6,8 @@ const { lowercaseMiddleware } = require('../backend/middlewares/middleware')
 const app = express();
 require('dotenv').config()
 
+const { createSeedData } = require('../backend/test/seedDatas')
+
 const multer = require('multer')
 const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
@@ -46,6 +48,10 @@ app.use(upload.any())
 // LOWERCASE MIDDLEWARE
 
 app.use(lowercaseMiddleware)
+
+// CREATE SEED DATAS
+
+// createSeedData()
 
 // ------------ ROUTES ---------------
 

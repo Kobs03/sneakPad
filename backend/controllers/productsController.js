@@ -5,31 +5,6 @@ const { uploadFromBuffer, deleteUpload } = require('../cloudinary')
 
 const productController = {
 
-
-    // ------------ CODE TEST ------------
-
-    codeTesting() {
-        return async (req, res) => {
-
-            // if (req.body) {
-            //     for (key in req.body) {
-
-            //         if (Object.prototype.hasOwnProperty.call(req.body, key)) {
-            //             const value = req.body[key]
-            //             const lowercaseValue = value.toLowerCase()
-            //             req.body[key] = lowercaseValue;
-            //         }
-
-            //     }
-            //     console.log(req.body)
-            //     res.json(req.body)
-            // }
-
-            res.json(req.body)
-        }
-    },
-
-
     // ------------ GET ROUTES ------------
 
     getProducts() {
@@ -108,30 +83,9 @@ const productController = {
 
             res.json(filterOptions)
 
-            // filter test
-
-            // const sizeOrder = { "XS": 0, "S": 1, "M": 2, "L": 3, "XL": 4 };
-
-            // const testData = await products_data.findById("insert id here").populate("variants")
-            // const toSort = []
-
-            // for (const data of testData.variants) {
-            //     toSort.push(data)
-            // }
-
-            // if (testData.apparel_type != null) {
-            //     toSort.sort(function (a, b) {
-            //         return sizeOrder[a.apparel_size] - sizeOrder[b.apparel_size]
-            //     })
-            //     console.log("SORTED SUCCESSFULLY")
-            // } else {
-            //     console.log("NOTHING TO SORT!")
-            // }
-
-            // res.json(toSort)
-
         }
     },
+
 
     // ------------ POST ROUTES ------------
 
@@ -322,7 +276,48 @@ const productController = {
         }
     },
 
-    // -------------------------------------
+    // ------------ CODE TEST ------------
+
+    codeTesting() {
+        return async (req, res) => {
+
+            // if (req.body) {
+            //     for (key in req.body) {
+
+            //         if (Object.prototype.hasOwnProperty.call(req.body, key)) {
+            //             const value = req.body[key]
+            //             const lowercaseValue = value.toLowerCase()
+            //             req.body[key] = lowercaseValue;
+            //         }
+
+            //     }
+            //     console.log(req.body)
+            //     res.json(req.body)
+            // }
+
+            // filter test
+
+            // const sizeOrder = { "XS": 0, "S": 1, "M": 2, "L": 3, "XL": 4 };
+
+            // const testData = await products_data.findById("insert id here").populate("variants")
+            // const toSort = []
+
+            // for (const data of testData.variants) {
+            //     toSort.push(data)
+            // }
+
+            // if (testData.apparel_type != null) {
+            //     toSort.sort(function (a, b) {
+            //         return sizeOrder[a.apparel_size] - sizeOrder[b.apparel_size]
+            //     })
+            //     console.log("SORTED SUCCESSFULLY")
+            // } else {
+            //     console.log("NOTHING TO SORT!")
+            // }
+
+            // res.json(toSort)
+        }
+    },
 
 }
 
