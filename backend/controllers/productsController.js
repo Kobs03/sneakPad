@@ -7,13 +7,71 @@ const productController = {
 
     // ------------ GET ROUTES ------------
 
+    // getProducts() {
+    //     return async (req, res, next) => {
+
+    //         const allProducts = await products_data.find()
+    //             .populate('variants')
+
+    //         res.json(allProducts)
+
+    //     }
+    // },
+
     getProducts() {
         return async (req, res, next) => {
 
-            const allProducts = await products_data.find()
-                .populate('variants')
+            const { variant_size, user_category, ...rest } = req.query
 
-            res.json(allProducts)
+            let varData = {
+                variant_size: variant_size
+            }
+
+            let userCat = {
+                user_category: user_category
+            }
+
+            const varRes = await product_variants.find(varData)
+            const userCatRes = await product_variants.find(userCat)
+
+            let varIdRef = []
+            let userCatRef = []
+
+            for (results of varRes) {
+                varIdRef.push(results._id)
+            }
+
+            for (results of userCatRes) {
+                userCatRef.push(results._id)
+            }
+
+            // const test = await products_data.find({ variants: { $in: userCatRef } })
+            // console.log(test)
+
+            // res.json(test)
+
+            if (!varIdRef.length) {
+                const varResUpdated = await products_data.find(
+                    rest
+                ).populate("variants")
+                res.json(varResUpdated)
+            } else {
+                const res2 = await products_data.find({
+                    $and: [
+                        rest,
+                        {
+                            $or: [
+                                { variants: { $in: varIdRef } },
+                                { variants: { $in: userCatRef } }
+                            ]
+                        }
+
+                    ]
+                }
+                ).populate("variants")
+                console.log(res2)
+                res.json(res2)
+            }
 
         }
     },
@@ -21,26 +79,33 @@ const productController = {
     getVariants() {
         return async (req, res) => {
 
-            req.query
+            if (req.query.variant_size) {
+                {
+                    const queryRes = await products_data.find(req.query)
+                        .populate('variants')
 
-            const allVariants = await product_variants.find(req.query)
-                .populate('products')
+                    const allVariants = await product_variants.find(req.query)
+                        .populate('products')
 
-            let productIds = []
+                    let productIds = []
 
-            for (results of allVariants) {
-                productIds.push(results._id)
+                    for (results of allVariants) {
+                        productIds.push(results._id)
+                    }
+
+                    const initialRes = await products_data.find({
+                        variants: { $in: productIds }
+                    }).populate("variants")
+
+                    console.log(initialRes.length)
+
+                    queryRes.push(...initialRes)
+
+                    console.log(queryRes.length)
+
+                    res.json(queryRes)
+                }
             }
-
-            const finalRes = await products_data.find({
-                variants: { $in: productIds }
-            }).populate("variants")
-
-            console.log(productIds)
-            console.log(finalRes)
-
-            res.json(finalRes)
-
         }
     },
 

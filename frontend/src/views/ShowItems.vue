@@ -4,7 +4,9 @@
       <div class="filter_options">
         <div class="header">
           <h3>Filters</h3>
+          <button @click.prevent="getFilterResponse">TEST</button>
         </div>
+        {{ filterArray }}
         <!---------------------SHOES TYPES------------------------->
 
         <div class="collapsible">Shoes +</div>
@@ -14,8 +16,9 @@
             <input
               type="checkbox"
               id="shoes-type"
-              name="shoes_type="
-              :value="res"
+              :value="`shoes_type=${res}`"
+              v-model="filterArray"
+              @change="getFilterResponse"
             />
             {{ res }}
           </div>
@@ -29,15 +32,16 @@
           <input
             type="checkbox"
             id="brands"
-            name="product_brand="
-            :value="res"
+            :value="`product_brand=${res}`"
+            v-model="filterArray"
+            @change="getFilterResponse"
           />
           {{ res }}
         </div>
 
         <!-------------------PRODUCT_BRANDS------------------------>
 
-        <div class="collapsible">Gender +</div>
+        <div class="collapsible">User Category +</div>
 
         <div
           v-for="userCategory in filterDatas.userCategory"
@@ -46,8 +50,9 @@
           <input
             type="checkbox"
             id="user_category"
-            name="user_category="
-            :value="userCategory"
+            :value="`user_category=${userCategory}`"
+            v-model="filterArray"
+            @change="getFilterResponse"
           />
           {{ userCategory }}
         </div>
@@ -65,8 +70,9 @@
             <input
               type="checkbox"
               id="apparel_type"
-              name="apparel_type="
-              :value="res"
+              :value="`apparel_type=${res}`"
+              v-model="filterArray"
+              @change="getFilterResponse"
             />
             {{ res }}
           </div>
@@ -85,8 +91,9 @@
             <input
               type="checkbox"
               id="sizes"
-              name="variant_size="
-              :value="sizes"
+              :value="`variant_size=${sizes}`"
+              v-model="filterArray"
+              @change="getFilterResponse"
             />
             US {{ sizes }}
           </div>
@@ -141,7 +148,7 @@ export default {
   data() {
     return {
       items,
-      query: [],
+      filterArray: [],
       filterDatas: [],
     };
   },
@@ -163,6 +170,16 @@ export default {
         null,
         (res) => (this.filterDatas = res.data)
       );
+    },
+
+    getFilterResponse() {
+      fetchApi(
+        "get",
+        "http://localhost:8080/products" + `?${this.filterArray.join("&")}`,
+        null,
+        (res) => (this.items.products = res.data)
+      );
+      console.log(this.items.products);
     },
   },
 

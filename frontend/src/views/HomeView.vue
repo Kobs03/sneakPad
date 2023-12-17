@@ -1,5 +1,6 @@
 <template>
   <h1>Welcome to Sneak Pad !!</h1>
+  TOTAL RES: {{ items.products.length }} <br>
   Query Array : {{ query }} <br />
   <br />
   Query String : {{ queryString }} <br />

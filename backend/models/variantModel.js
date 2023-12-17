@@ -8,17 +8,17 @@ const variants = new Schema({
         required: true,
     },
 
+    variant_price: {
+        type: Number,
+        required: true,
+    },
+
     variant_size: {
         type: Number,
     },
 
     apparel_size: {
         type: String,
-    },
-
-    variant_price: {
-        type: Number,
-        required: true,
     },
 
     number_of_stocks: {

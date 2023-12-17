@@ -2,7 +2,7 @@
   <div class="main_container">
     <div class="side1">
       <div class="image1" v-for="img in itemDetails.product_img" :key="img">
-        <img :src="img.img_url" alt="" />
+        <img src="../assets/images/hanichu.jpg" alt="" />
       </div>
 
       <div class="description">
