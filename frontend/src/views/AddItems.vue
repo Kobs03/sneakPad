@@ -3,14 +3,20 @@
     <div class="test"><h1>Add product listing</h1></div>
     <div class="test">
       <form name="createProducts" enctype="multipart/form-data">
+        <!-- NAME INPUT -->
+
         <label for="name"> Name : </label> <br />
-        <input type="text" id="name" v-model="newName" required />
+        <input type="text" id="name" v-model="nameInput" required />
         <br />
         <br />
 
+        <!-- BRAND INPUT -->
+
         <label for="brand"> Brand : </label> <br />
-        <input type="text" id="brand" v-model="newBrand" required /> <br />
+        <input type="text" id="brand" v-model="brandInput" required /> <br />
         <br />
+
+        <!-- DESCRIPTION INPUT -->
 
         <label for="description"> Description : </label> <br />
         <textarea
@@ -18,41 +24,53 @@
           id="description"
           row="40"
           col="30"
-          v-model="newDescription"
+          v-model="descriptionInput"
           required
         >
         </textarea>
         <br />
         <br />
 
-        <label for="category"> Category : </label> <br />
-        <select id="category" v-model="newCategory" required>
-          <option value="none" selected disabled>Choose category</option>
-          <option value="shoes">Shoes</option>
-          <option value="sandals">Sandals</option>
-          <option value="apparels">Apparels</option>
+        <!-- TYPE INPUT -->
+
+        <label for="type"> Type : </label> <br />
+        <select id="type" v-model="typeInput" required>
+          <option value="none" selected disabled>Choose sizes</option>
+          <option value="Shoes">Shoes</option>
+          <option value="Apparel">Apparel</option>
+          <option value="Other">Other</option>
         </select>
         <br />
         <br />
 
-        <div v-if="newCategory === 'shoes'">
-          Shoes Type : <input type="text" v-model="newShoesType" />
-          <br />
-          <br />
-        </div>
+        <!-- CATEGORY INPUT -->
 
-        <div v-if="newCategory === 'apparels'">
-          Apparel Type : <input type="text" v-model="newApparelType" />
-          <br />
-          <br />
-        </div>
+        <label for="category"> Category : </label> <br />
+        <input type="text" id="category" v-model="categoryInput" required />
+        <br />
+        <br />
+
+        <!-- GENDER INPUT -->
+
+        <label for="gender"> Gender : </label> <br />
+        <select id="gender" v-model="genderInput" required>
+          <option value="none" selected disabled>Choose user-category</option>
+          <option value="Mens">Mens</option>
+          <option value="Womens">Womens</option>
+          <option value="Boys">Boys</option>
+          <option value="Girls">Girls</option>
+          <option value="Unisex">Unisex</option>
+        </select>
+        <br />
+        <br />
 
         <!-- IMAGE UPLOAD FORM !!! -->
 
+        <label for="image"> Upload Image : </label>
         <input
           type="file"
           name="image"
-          id=""
+          id="image"
           @change="onFileSelected"
           multiple
         />
@@ -71,29 +89,21 @@
             v-for="(variantDatas, index) in variantsContainer"
             :key="index"
           >
-            <label for="user-category"> User-Category : </label> <br />
-            <select
-              id="user-category"
-              v-model="variantDatas.user_category"
-              required
-            >
-              <option value="none" selected disabled>
-                Choose user-category
-              </option>
-              <option value="Mens">Mens</option>
-              <option value="Womens">Womens</option>
-              <option value="Kids">Kids</option>
-              <option value="Unisex">Unisex</option>
-            </select>
-            <br />
-
             <input type="hidden" v-model="variantsContainer[index]" />
 
-            <label for="size">Size: </label> <br />
-            <div v-if="newCategory === 'shoes'">
+            <!-- VARIANT SIZE INPUT !!! -->
+
+            <label for="size" v-if="typeInput">Size: </label> <br />
+
+            <!-- IF SHOES -->
+
+            <div v-if="typeInput === 'Shoes'">
               <input type="number" v-model="variantDatas.variant_size" /> <br />
             </div>
-            <div v-if="newCategory === 'apparels'">
+
+            <!-- IF APPARELS -->
+
+            <div v-if="typeInput === 'Apparel'">
               <select
                 id="apparel-size"
                 v-model="variantDatas.apparel_size"
@@ -109,11 +119,21 @@
               <br />
             </div>
 
+            <!-- ELSE OTHER -->
+
+            <div v-if="typeInput === 'Other'">
+              <input type="text" v-model="variantDatas.variant_size" /> <br />
+            </div>
+
+            <!-- VARIANT PRICE INPUT !!! -->
+
             <label for="price">Price: </label> <br />
             <input type="number" v-model="variantDatas.variant_price" /> <br />
 
+            <!-- VARIANT STOCKS INPUT !!! -->
+
             <label for="stocks">Stocks: </label> <br />
-            <input type="number" v-model="variantDatas.number_of_stocks" />
+            <input type="number" v-model="variantDatas.variant_stocks" />
             <br />
             <br />
 
@@ -138,12 +158,12 @@ export default {
   data() {
     return {
       items,
-      newName: "",
-      newBrand: "",
-      newDescription: "",
-      newCategory: "",
-      newShoesType: null,
-      newApparelType: null,
+      nameInput: "",
+      brandInput: "",
+      descriptionInput: "",
+      typeInput: "",
+      categoryInput: "",
+      genderInput: "",
       variantsContainer: [],
       file: [],
     };
@@ -164,18 +184,12 @@ export default {
     async addItems() {
       const formData = new FormData();
 
-      formData.append("product_name", this.newName);
-      formData.append("product_brand", this.newBrand);
-      formData.append("product_description", this.newDescription);
-      formData.append("product_category", this.newCategory);
-
-      if (this.newShoesType != "null") {
-        formData.append("shoes_type", this.newShoesType);
-      }
-
-      if (this.newApparelType != "null") {
-        formData.append("apparel_type", this.newApparelType);
-      }
+      formData.append("product_name", this.nameInput);
+      formData.append("product_brand", this.brandInput);
+      formData.append("product_description", this.descriptionInput);
+      formData.append("product_type", this.typeInput);
+      formData.append("product_category", this.categoryInput);
+      formData.append("gender", this.genderInput);
 
       for (let resImg of this.file) {
         formData.append("image", resImg);

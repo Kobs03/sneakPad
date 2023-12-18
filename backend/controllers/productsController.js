@@ -5,19 +5,6 @@ const { uploadFromBuffer, deleteUpload } = require('../cloudinary')
 
 const productController = {
 
-    // ------------ GET ROUTES ------------
-
-    // getProducts() {
-    //     return async (req, res, next) => {
-
-    //         const allProducts = await products_data.find()
-    //             .populate('variants')
-
-    //         res.json(allProducts)
-
-    //     }
-    // },
-
     getProducts() {
         return async (req, res, next) => {
 
@@ -127,23 +114,23 @@ const productController = {
 
             const filterOptions = {
                 brands: [],
-                shoesType: [],
-                apparelType: [],
-                userCategory: [],
+                type: [],
+                category: [],
+                gender: [],
                 sizes: [],
             }
 
             const brandsRes = await products_data.distinct("product_brand")
-            const shoesTypeRes = await products_data.distinct("shoes_type")
-            const apparelRes = await products_data.distinct("apparel_type")
-            const genderRes = await product_variants.distinct("user_category")
+            const typeRes = await products_data.distinct("product_type")
+            const categoryRes = await products_data.distinct("product_category")
+            const genderRes = await products_data.distinct("gender")
             const sizesRes = await product_variants.distinct("variant_size")
 
 
             filterOptions.brands.push(...brandsRes)
-            filterOptions.shoesType.push(...shoesTypeRes)
-            filterOptions.apparelType.push(...apparelRes)
-            filterOptions.userCategory.push(...genderRes)
+            filterOptions.type.push(...typeRes)
+            filterOptions.category.push(...categoryRes)
+            filterOptions.gender.push(...genderRes)
             filterOptions.sizes.sort((a, b) => { return a - b }).push(...sizesRes)
 
             res.json(filterOptions)

@@ -1,6 +1,6 @@
 <template>
   <h1>Welcome to Sneak Pad !!</h1>
-  TOTAL RES: {{ items.products.length }} <br>
+  TOTAL RES: {{ items.products.length }} <br />
   Query Array : {{ query }} <br />
   <br />
   Query String : {{ queryString }} <br />
@@ -18,7 +18,7 @@
   <br />
   <br />
 
-  <button @click.prevent="filterData">filter</button>
+  <button @click.prevent="filterData">filter</button><br /><br />
 </template>
 
 <script>
@@ -31,6 +31,10 @@ export default {
       items,
       query: [],
       queryString: "",
+      testKey: "",
+      testValue: "",
+      testObj: [],
+      anotherTest: [],
     };
   },
 
@@ -42,6 +46,10 @@ export default {
       this.items.variants = items.data;
       this.items.products = this.items.variants;
     },
+  },
+
+  created() {
+    this.testObj = {};
   },
 };
 </script>
