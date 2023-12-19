@@ -4,31 +4,37 @@
       <div class="filter_options">
         <div class="header">
           <h3>Filters</h3>
-          <button @click.prevent="getFilterResponse">TEST</button>
         </div>
-        {{ filterArray }}
-        <!---------------------SHOES TYPES------------------------->
+        <div v-for="(filters, index) of filterArray" :key="index">
+          <button @click="removeElem(index)">
+            {{ filters.split("=")[1] }} {{ index }} X
+          </button>
+        </div>
+        <!-------------------PRODUCT TYPE------------------------>
 
-        <div class="collapsible">Shoes +</div>
+        <div class="collapsible">Type +</div>
 
-        <div class="shoes-type" v-for="res of filterDatas.shoesType" :key="res">
-          <div v-if="res != 'null'">
-            <input
-              type="checkbox"
-              id="shoes-type"
-              :value="`shoes_type=${res}`"
-              v-model="filterArray"
-              @change="getFilterResponse"
-            />
-            {{ res }}
-          </div>
+        <div
+          class="types"
+          v-for="(res, index) in filterDatas.types"
+          :key="index"
+        >
+          <input
+            type="checkbox"
+            id="types"
+            :ref="res"
+            :value="`product_type=${res}`"
+            v-model="filterArray"
+            @change="getFilterResponse()"
+          />
+          {{ res }}
         </div>
 
-        <!-------------------PRODUCT_BRANDS------------------------>
+        <!---------------------PRODUCT BRAND------------------------->
 
         <div class="collapsible">Brands +</div>
 
-        <div class="selections" v-for="res in filterDatas.brands" :key="res">
+        <div class="brands" v-for="res of filterDatas.brands" :key="res">
           <input
             type="checkbox"
             id="brands"
@@ -39,55 +45,46 @@
           {{ res }}
         </div>
 
-        <!-------------------PRODUCT_BRANDS------------------------>
+        <!-------------------PRODUCT CATEGORY------------------------>
 
-        <div class="collapsible">User Category +</div>
+        <div class="collapsible">Category +</div>
 
-        <div
-          v-for="userCategory in filterDatas.userCategory"
-          :key="userCategory"
-        >
+        <div v-for="res in filterDatas.category" :key="res">
           <input
             type="checkbox"
-            id="user_category"
-            :value="`user_category=${userCategory}`"
+            id="category"
+            :value="`product_category=${res}`"
             v-model="filterArray"
             @change="getFilterResponse"
           />
-          {{ userCategory }}
+          {{ res }}
         </div>
 
-        <!-------------------APPAREL_TYPES------------------------>
+        <!-------------------USER GENDER------------------------>
 
-        <div class="collapsible">Apparels +</div>
+        <div class="collapsible">Gender +</div>
 
-        <div
-          class="selections"
-          v-for="res in filterDatas.apparelType"
-          :key="res"
-        >
-          <div v-if="res != 'null'">
-            <input
-              type="checkbox"
-              id="apparel_type"
-              :value="`apparel_type=${res}`"
-              v-model="filterArray"
-              @change="getFilterResponse"
-            />
-            {{ res }}
-          </div>
+        <div class="selections" v-for="res in filterDatas.gender" :key="res">
+          <input
+            type="checkbox"
+            id="gender"
+            :value="`gender=${res}`"
+            v-model="filterArray"
+            @change="getFilterResponse"
+          />
+          {{ res }}
         </div>
 
-        <!-------------------PRODUCT_SIZES------------------------>
+        <!-------------------SIZES------------------------>
 
-        <div class="collapsible">Sizes +</div>
+        <div class="collapsible">Shoes Sizes +</div>
 
         <div
-          class="size_container"
-          v-for="sizes in filterDatas.sizes"
+          class="shoes_sizes"
+          v-for="sizes in filterDatas.shoesSizes"
           :key="sizes"
         >
-          <div class="sizes">
+          <div class="sizes" v-if="sizes != null">
             <input
               type="checkbox"
               id="sizes"
@@ -98,8 +95,32 @@
             US {{ sizes }}
           </div>
         </div>
+        <!-------------------APPAREL SIZES------------------------>
+
+        <div class="collapsible">Apparel Sizes +</div>
+
+        <div
+          class="apparel_sizes"
+          v-for="sizes in filterDatas.apparelSizes"
+          :key="sizes"
+        >
+          <div class="sizes" v-if="sizes != null">
+            <input
+              type="checkbox"
+              id="sizes"
+              :value="`variant_size=${sizes}`"
+              v-model="filterArray"
+              @change="getFilterResponse"
+            />
+            {{ sizes }}
+          </div>
+        </div>
+        <br />
+        <button @click.prevent="getFilterResponse">TEST</button>
       </div>
     </div>
+
+    <!----------------------DISPLAY PRODUCTS AREA------------------------>
 
     <div class="product_area">
       <div class="header">
@@ -150,19 +171,11 @@ export default {
       items,
       filterArray: [],
       filterDatas: [],
+      filterDisplay: [],
     };
   },
 
   methods: {
-    deleteProduct(id) {
-      fetchApi(
-        "delete",
-        `http://localhost:8080/products/delProduct/${id}`,
-        null,
-        () => location.reload()
-      );
-    },
-
     getFilterOptions() {
       fetchApi(
         "get",
@@ -179,7 +192,19 @@ export default {
         null,
         (res) => (this.items.products = res.data)
       );
-      console.log(this.items.products);
+    },
+
+    deleteProduct(id) {
+      fetchApi(
+        "delete",
+        `http://localhost:8080/products/delProduct/${id}`,
+        null,
+        () => location.reload()
+      );
+    },
+
+    removeElem(i) {
+      this.filterArray.splice(i, 1);
     },
   },
 

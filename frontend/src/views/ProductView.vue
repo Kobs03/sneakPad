@@ -30,14 +30,13 @@
               v-for="vars in itemDetails.variants"
               :key="vars"
             >
-              <div
-                @click="showPrice(vars.variant_price, vars.number_of_stocks)"
-              >
-                <div v-if="(itemDetails.product_category = 'apparel')">
-                  {{ vars.apparel_size }}
+              <div @click="showPrice(vars.variant_price, vars.variant_stocks)">
+                <div v-if="itemDetails.product_type == 'shoes' && !null">
+                  US {{ vars.shoes_sizes }}
                 </div>
-                <div v-if="(itemDetails.product_category = 'shoes')">
-                  {{ vars.variant_size }}
+
+                <div v-if="itemDetails.product_type == 'apparel' && !null">
+                  {{ vars.apparel_sizes }}
                 </div>
               </div>
             </button>

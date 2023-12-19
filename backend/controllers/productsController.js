@@ -1,6 +1,7 @@
 const { products_data } = require('../models/productModel')
 const { product_variants } = require('../models/variantModel')
 const { uploadFromBuffer, deleteUpload } = require('../cloudinary')
+const { isObjectIdOrHexString } = require('mongoose')
 
 
 const productController = {
@@ -8,57 +9,39 @@ const productController = {
     getProducts() {
         return async (req, res, next) => {
 
-            const { variant_size, user_category, ...rest } = req.query
+            // const { variant_size, user_category, ...rest } = req.query
 
-            let varData = {
-                variant_size: variant_size
-            }
+            // let varData = {
+            //     variant_size: variant_size
+            // }
 
-            let userCat = {
-                user_category: user_category
-            }
+            // const varRes = await product_variants.find(varData)
 
-            const varRes = await product_variants.find(varData)
-            const userCatRes = await product_variants.find(userCat)
+            // let varIdRef = []
 
-            let varIdRef = []
-            let userCatRef = []
+            // for (results of varRes) {
+            //     varIdRef.push(results._id)
+            // }
 
-            for (results of varRes) {
-                varIdRef.push(results._id)
-            }
+            // if (!varIdRef.length) {
+            //     const varResUpdated = await products_data.find(
+            //         rest
+            //     ).populate("variants")
+            //     res.json(varResUpdated)
+            // } else {
+            //     const res2 = await products_data.find({
+            //         $and: [rest, { variants: { $in: varIdRef } },
+            //         ]
+            //     }
+            //     ).populate("variants")
+            //     console.log(res2)
+            //     res.json(res2)
+            // }
 
-            for (results of userCatRes) {
-                userCatRef.push(results._id)
-            }
-
-            // const test = await products_data.find({ variants: { $in: userCatRef } })
-            // console.log(test)
-
-            // res.json(test)
-
-            if (!varIdRef.length) {
-                const varResUpdated = await products_data.find(
-                    rest
-                ).populate("variants")
-                res.json(varResUpdated)
-            } else {
-                const res2 = await products_data.find({
-                    $and: [
-                        rest,
-                        {
-                            $or: [
-                                { variants: { $in: varIdRef } },
-                                { variants: { $in: userCatRef } }
-                            ]
-                        }
-
-                    ]
-                }
-                ).populate("variants")
-                console.log(res2)
-                res.json(res2)
-            }
+            const allProducts = await products_data.find(req.query).populate('variants')
+            // console.log(req.query)
+            // console.log(allProducts)
+            res.json(allProducts)
 
         }
     },
@@ -113,25 +96,14 @@ const productController = {
         return async (req, res) => {
 
             const filterOptions = {
-                brands: [],
-                type: [],
-                category: [],
-                gender: [],
-                sizes: [],
+                types: await products_data.distinct("product_type"),
+                brands: await products_data.distinct("product_brand"),
+                category: await products_data.distinct("product_category"),
+                gender: await products_data.distinct("gender"),
+                shoesSizes: [... await product_variants.distinct("shoes_sizes")]
+                    .sort((a, b) => { return a - b }),
+                apparelSizes: [... await product_variants.distinct("apparel_sizes")]
             }
-
-            const brandsRes = await products_data.distinct("product_brand")
-            const typeRes = await products_data.distinct("product_type")
-            const categoryRes = await products_data.distinct("product_category")
-            const genderRes = await products_data.distinct("gender")
-            const sizesRes = await product_variants.distinct("variant_size")
-
-
-            filterOptions.brands.push(...brandsRes)
-            filterOptions.type.push(...typeRes)
-            filterOptions.category.push(...categoryRes)
-            filterOptions.gender.push(...genderRes)
-            filterOptions.sizes.sort((a, b) => { return a - b }).push(...sizesRes)
 
             res.json(filterOptions)
 
@@ -144,6 +116,8 @@ const productController = {
 
     addProducts() {
         return async (req, res) => {
+
+            console.log(req.body)
 
             // create new products and save
 

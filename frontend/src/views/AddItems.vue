@@ -38,7 +38,6 @@
           <option value="none" selected disabled>Choose sizes</option>
           <option value="Shoes">Shoes</option>
           <option value="Apparel">Apparel</option>
-          <option value="Other">Other</option>
         </select>
         <br />
         <br />
@@ -82,7 +81,6 @@
           <button @click.prevent="addVariants" v-if="!variantsContainer.length">
             Add Variants
           </button>
-          <br />
 
           <div
             class="variants"
@@ -93,12 +91,14 @@
 
             <!-- VARIANT SIZE INPUT !!! -->
 
-            <label for="size" v-if="typeInput">Size: </label> <br />
+            <label for="size" v-if="typeInput">Size: </label>
+            <br />
 
-            <!-- IF SHOES -->
+            <!-- IF SHOES && MENS -->
 
             <div v-if="typeInput === 'Shoes'">
-              <input type="number" v-model="variantDatas.variant_size" /> <br />
+              <input type="number" v-model="variantDatas.shoes_sizes" />
+              <br />
             </div>
 
             <!-- IF APPARELS -->
@@ -106,7 +106,7 @@
             <div v-if="typeInput === 'Apparel'">
               <select
                 id="apparel-size"
-                v-model="variantDatas.apparel_size"
+                v-model="variantDatas.apparel_sizes"
                 required
               >
                 <option value="none" selected disabled>Choose sizes</option>
@@ -117,12 +117,6 @@
                 <option value="XL">XL</option>
               </select>
               <br />
-            </div>
-
-            <!-- ELSE OTHER -->
-
-            <div v-if="typeInput === 'Other'">
-              <input type="text" v-model="variantDatas.variant_size" /> <br />
             </div>
 
             <!-- VARIANT PRICE INPUT !!! -->
@@ -206,7 +200,6 @@ export default {
         (res) => (this.items.products = res.data)
       );
 
-      console.log(formData.entries);
       this.$router.push("/products").then(() => this.$router.go());
     },
 
