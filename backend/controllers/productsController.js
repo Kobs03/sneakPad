@@ -117,8 +117,6 @@ const productController = {
     addProducts() {
         return async (req, res) => {
 
-            console.log(req.body)
-
             // create new products and save
 
             const newProduct = new products_data(
@@ -164,6 +162,12 @@ const productController = {
             for (const object of variantsArray) {
 
                 object.products = newProduct._id
+
+                if (findProduct.product_type === "shoes") {
+                    object.apparel_sizes = null
+                } else {
+                    object.shoes_sizes = null
+                }
 
                 const newVariant = await product_variants(
                     object

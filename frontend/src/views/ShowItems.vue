@@ -7,7 +7,7 @@
         </div>
         <div v-for="(filters, index) of filterArray" :key="index">
           <button @click="removeElem(index)">
-            {{ filters.split("=")[1] }} {{ index }} X
+            {{ filters.split("=")[1] }} X
           </button>
         </div>
         <!-------------------PRODUCT TYPE------------------------>

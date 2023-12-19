@@ -2,11 +2,20 @@
   <div class="addItems">
     <div class="test"><h1>Add product listing</h1></div>
     <div class="test">
-      <form name="createProducts" enctype="multipart/form-data">
+      <form id="productsForm" enctype="multipart/form-data">
         <!-- NAME INPUT -->
 
+        <p
+          style="color: red"
+          v-for="(errors, field) in error"
+          :key="field"
+          class="error-message"
+        >
+          {{ errors.join(",") }}
+        </p>
+
         <label for="name"> Name : </label> <br />
-        <input type="text" id="name" v-model="nameInput" required />
+        <input type="text" id="product_name" v-model="nameInput" required />
         <br />
         <br />
 
@@ -75,70 +84,67 @@
         />
         <br /><br />
 
-        <!-- ADD VARIANT SECTION !!! -->
-
-        <form action="">
-          <button @click.prevent="addVariants" v-if="!variantsContainer.length">
-            Add Variants
-          </button>
-
-          <div
-            class="variants"
-            v-for="(variantDatas, index) in variantsContainer"
-            :key="index"
-          >
-            <input type="hidden" v-model="variantsContainer[index]" />
-
-            <!-- VARIANT SIZE INPUT !!! -->
-
-            <label for="size" v-if="typeInput">Size: </label>
-            <br />
-
-            <!-- IF SHOES && MENS -->
-
-            <div v-if="typeInput === 'Shoes'">
-              <input type="number" v-model="variantDatas.shoes_sizes" />
-              <br />
-            </div>
-
-            <!-- IF APPARELS -->
-
-            <div v-if="typeInput === 'Apparel'">
-              <select
-                id="apparel-size"
-                v-model="variantDatas.apparel_sizes"
-                required
-              >
-                <option value="none" selected disabled>Choose sizes</option>
-                <option value="XS">XS</option>
-                <option value="S">S</option>
-                <option value="M">M</option>
-                <option value="L">L</option>
-                <option value="XL">XL</option>
-              </select>
-              <br />
-            </div>
-
-            <!-- VARIANT PRICE INPUT !!! -->
-
-            <label for="price">Price: </label> <br />
-            <input type="number" v-model="variantDatas.variant_price" /> <br />
-
-            <!-- VARIANT STOCKS INPUT !!! -->
-
-            <label for="stocks">Stocks: </label> <br />
-            <input type="number" v-model="variantDatas.variant_stocks" />
-            <br />
-            <br />
-
-            <button @click.prevent="addVariants">+</button> &nbsp;
-            <button @click.prevent="delVariants(index)">X</button>
-          </div>
-        </form>
-
-        <br />
-
         <button type="submit" @click.prevent="addItems">Submit</button>
+      </form>
+
+      <!-- ADD VARIANT SECTION !!! -->
+
+      <form action="" id="variantsForm">
+        <button @click.prevent="addVariants" v-if="!variantsContainer.length">
+          Add Variants
+        </button>
+
+        <div
+          class="variants"
+          v-for="(variantDatas, index) in variantsContainer"
+          :key="index"
+        >
+          <input type="hidden" v-model="variantsContainer[index]" />
+
+          <!-- VARIANT SIZE INPUT !!! -->
+
+          <!-- IF SHOES  -->
+
+          <div v-if="typeInput === 'Shoes'">
+            <label for="size" v-if="typeInput">Size: </label> <br />
+            <input type="number" v-model="variantDatas.shoes_sizes" required />
+            <br />
+          </div>
+
+          <!-- IF APPARELS -->
+
+          <div v-if="typeInput === 'Apparel'">
+            <label for="size" v-if="typeInput">Size: </label> <br />
+            <select
+              id="apparel-size"
+              v-model="variantDatas.apparel_sizes"
+              required
+            >
+              <option value="none" selected disabled>Choose sizes</option>
+              <option value="XS">XS</option>
+              <option value="S">S</option>
+              <option value="M">M</option>
+              <option value="L">L</option>
+              <option value="XL">XL</option>
+            </select>
+            <br />
+          </div>
+
+          <!-- VARIANT PRICE INPUT !!! -->
+
+          <label for="price">Price: </label> <br />
+          <input type="number" v-model="variantDatas.variant_price" /> <br />
+
+          <!-- VARIANT STOCKS INPUT !!! -->
+
+          <label for="stocks">Stocks: </label> <br />
+          <input type="number" v-model="variantDatas.variant_stocks" />
+          <br />
+          <br />
+
+          <button @click.prevent="addVariants">+</button> &nbsp;
+          <button @click.prevent="delVariants(index)">X</button>
+        </div>
       </form>
     </div>
   </div>
@@ -147,6 +153,7 @@
 <script>
 import { items } from "../modules/items";
 import { fetchApi } from "../controllers/controller";
+import validate from "validate.js";
 
 export default {
   data() {
@@ -160,6 +167,7 @@ export default {
       genderInput: "",
       variantsContainer: [],
       file: [],
+      error: "",
     };
   },
 
@@ -173,9 +181,38 @@ export default {
       }
     },
 
-    // add product items on database
-
     async addItems() {
+      // constraints declaration for form validations
+
+      const constraints = {
+        product_name: {
+          presence: { allowEmpty: false, message: "is required" },
+        },
+        product_brand: {
+          presence: { allowEmpty: false, message: "is required" },
+        },
+        product_category: {
+          presence: { allowEmpty: false, message: "is required" },
+        },
+        product_description: {
+          presence: { allowEmpty: false, message: "is required" },
+        },
+        product_type: {
+          presence: { allowEmpty: false, message: "is required" },
+        },
+        gender: {
+          presence: { allowEmpty: false, message: "is required" },
+        },
+        variantData: {
+          presence: {
+            allowEmpty: false,
+            message: "^Must have atleast one variant",
+          },
+        },
+      };
+
+      // declaring form data and appending values
+
       const formData = new FormData();
 
       formData.append("product_name", this.nameInput);
@@ -185,13 +222,36 @@ export default {
       formData.append("product_category", this.categoryInput);
       formData.append("gender", this.genderInput);
 
+      // appending array using stringify then parse in the backend
+
+      formData.append("variantData", JSON.stringify(this.variantsContainer));
+
       for (let resImg of this.file) {
         formData.append("image", resImg);
       }
 
-      // appending array using stringify then parse in the backend
+      // iterating formData object to become a single object data and a valid param
 
-      formData.append("variantData", JSON.stringify(this.variantsContainer));
+      const formDataObject = {};
+      formData.forEach((value, key) => {
+        formDataObject[key] = value;
+        if (key === "variantData") {
+          formDataObject[key] = value = this.variantsContainer;
+        }
+      });
+
+      // Validate the form data
+
+      const validationResult = validate(formDataObject, constraints);
+
+      if (validationResult) {
+        // Handle validation errors here
+        console.error(validationResult);
+        this.error = validationResult;
+        return; // Do not proceed with the API call if validation fails
+      }
+
+      // add product items on database
 
       await fetchApi(
         "post",
