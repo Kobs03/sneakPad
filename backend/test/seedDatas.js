@@ -4,23 +4,24 @@ const { product_variants } = require('../models/variantModel')
 
 const seedData = [];
 const brands = ["Nike", "Addidas", "World Balance", "Converse", "Gucci", "Louie Biton"]
-const shoesVar = ["Sneaker", "Running", "Casual"]
-const category = ["Shoes", "Apparels", "Others"]
-const apparelVar = ["T-shirt", "Hoodie", "Pants"]
-const userCat = ["Mens", "Womens", "Kids", "Unisex"]
+const typeVar = ["Shoes", "Apparels"]
+const shoesCategory = ['Athletic Shoes', 'Boots', 'Casual Shoes', 'Dress Shoes', 'Sandals', 'Slippers']
+const apparelsCategory = ['T-Shirts', 'Jeans', 'Dresses', 'Hoodies', 'Activewear', 'Formal Wear', 'Swimwear',];
+const genderVar = ["Mens", "Womens", "Boys", "Girls", "Unisex"]
+const apparelSizes = ["xs", "s", "m", "l", "xl"]
 
 function getRandomNumber(min, max) {
     return Math.floor(Math.random() * (max - min + 1)) + min;
-  }
+}
 
 for (let i = 0; i < 100; i++) {
     const product = {
         product_name: faker.commerce.productName(),
         product_brand: brands[Math.floor(Math.random() * brands.length)],
+        product_type: typeVar[Math.floor(Math.random() * typeVar.length)],
+        product_category: [],
+        gender: genderVar[Math.floor(Math.random() * genderVar.length)],
         product_description: faker.lorem.sentences(),
-        product_category: category[Math.floor(Math.random() * category.length)],
-        shoes_type: shoesVar[Math.floor(Math.random() * shoesVar.length)],
-        apparel_type: apparelVar[Math.floor(Math.random() * apparelVar.length)],
         product_img: [
             {
                 img_name: `Image ${i + 1}`,
@@ -28,18 +29,25 @@ for (let i = 0; i < 100; i++) {
             },
         ],
         variants: [],
-
     }
 
-    const variants = [
-        {
-            user_category: userCat[Math.floor(Math.random() * userCat.length)],
-            variant_size: getRandomNumber(4,17),
-            variant_price: getRandomNumber(599,15000),
-            number_of_stocks: getRandomNumber(1,100),
-            products: "",
+    product.product_category = (product.product_type === "Shoes")
+        ? product.product_category = shoesCategory[Math.floor(Math.random() * shoesCategory.length)]
+        : product.product_category = apparelsCategory[Math.floor(Math.random() * apparelsCategory.length)]
+
+
+    const variants = []
+    for (let i = 0; i < Math.floor(Math.random() * 3) + 1; i++) {
+
+        const variant = {
+            shoes_sizes: product.product_type === "Shoes" ? getRandomNumber(4, 17) : null,
+            apparel_sizes: product.product_type === "Apparels" ? apparelSizes[Math.floor(Math.random() * apparelSizes.length)] : null,
+            variant_price: getRandomNumber(599, 15000),
+            variant_stocks: getRandomNumber(1, 50),
+            products_id_ref: "",
         }
-    ]
+        variants.push(variant)
+    }
 
     seedData.push({ product, variants });
 }
@@ -51,11 +59,19 @@ const createSeedData = async () => {
         // newProduct.save()
 
         const newVariant = new product_variants(...data.variants)
-        newVariant.products = newProduct._id
-        newVariant.save()
+        newVariant.products_id_ref = newProduct._id
 
-        newProduct.variants.push(newVariant)
+        for (const test of data.variants) {
+            const newVariant = new product_variants(test)
+            newVariant.products_id_ref = newProduct._id
+            newVariant.save()
+            newProduct.variants.push(newVariant)
+
+        }
+
         newProduct.save()
+
+        console.log(newProduct)
 
     }
 

@@ -31,11 +31,11 @@
               :key="vars"
             >
               <div @click="showPrice(vars.variant_price, vars.variant_stocks)">
-                <div v-if="itemDetails.product_type == 'shoes' && !null">
+                <div v-if="itemDetails.product_type == 'Shoes' && !null">
                   US {{ vars.shoes_sizes }}
                 </div>
 
-                <div v-if="itemDetails.product_type == 'apparel' && !null">
+                <div v-if="itemDetails.product_type == 'Apparels' && !null">
                   {{ vars.apparel_sizes }}
                 </div>
               </div>

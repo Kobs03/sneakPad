@@ -1,8 +1,6 @@
 const { products_data } = require('../models/productModel')
 const { product_variants } = require('../models/variantModel')
 const { uploadFromBuffer, deleteUpload } = require('../cloudinary')
-const { isObjectIdOrHexString } = require('mongoose')
-
 
 const productController = {
 
