@@ -2,43 +2,68 @@ const { products_data } = require('../models/productModel')
 const { product_variants } = require('../models/variantModel')
 const { uploadFromBuffer, deleteUpload } = require('../cloudinary')
 
+const getDistinctValues = async (model, field) => {
+    try {
+        return await model.distinct(field);
+    } catch (error) {
+        console.error(`Error fetching distinct values for ${field}: ${error.message}`);
+        throw error;
+    }
+};
+
 const productController = {
 
     getProducts() {
         return async (req, res, next) => {
 
-            // const { variant_size, user_category, ...rest } = req.query
+            const { product_type, product_brand, product_category, gender, shoes_sizes, apparel_sizes } = req.query
 
-            // let varData = {
-            //     variant_size: variant_size
-            // }
+            const filter = {}
+            const refIds = {
+            }
 
-            // const varRes = await product_variants.find(varData)
+            if (product_type) {
+                filter.product_type = product_type
+            }
 
-            // let varIdRef = []
+            if (product_brand) {
+                filter.product_brand = product_brand
+            }
 
-            // for (results of varRes) {
-            //     varIdRef.push(results._id)
-            // }
+            if (product_category) {
+                filter.product_category = product_category
+            }
 
-            // if (!varIdRef.length) {
-            //     const varResUpdated = await products_data.find(
-            //         rest
-            //     ).populate("variants")
-            //     res.json(varResUpdated)
-            // } else {
-            //     const res2 = await products_data.find({
-            //         $and: [rest, { variants: { $in: varIdRef } },
-            //         ]
-            //     }
-            //     ).populate("variants")
-            //     console.log(res2)
-            //     res.json(res2)
-            // }
+            if (gender) {
+                filter.gender = gender
+            }
 
-            const allProducts = await products_data.find(req.query).populate('variants')
-            // console.log(req.query)
-            // console.log(allProducts)
+            if (shoes_sizes) {
+                [shoes_sizes].map(res => { return res })
+            }
+
+            if (apparel_sizes) {
+                [apparel_sizes].map(res => { return res })
+            }
+
+            const variantResults = await product_variants.find({
+                $and: [
+                    { shoes_sizes: { $in: shoes_sizes } },
+                    { apparel_sizes: { $in: apparel_sizes } }
+                ]
+            })
+                .populate('products')
+                .distinct('products_id_ref')
+
+            if (shoes_sizes || apparel_sizes) {
+                filter._id = variantResults
+            }
+
+            const allProducts = await products_data.find(filter).populate('variants');
+
+            console.log(filter)
+            console.log(variantResults)
+            console.log("TOTAL RESULTS : " + variantResults.length)
             res.json(allProducts)
 
         }
@@ -94,17 +119,16 @@ const productController = {
         return async (req, res) => {
 
             const filterOptions = {
-                types: await products_data.distinct("product_type"),
-                brands: await products_data.distinct("product_brand"),
-                category: await products_data.distinct("product_category"),
-                gender: await products_data.distinct("gender"),
-                shoesSizes: [... await product_variants.distinct("shoes_sizes")]
+                types: await getDistinctValues(products_data, "product_type"),
+                brands: await getDistinctValues(products_data, "product_brand"),
+                category: await getDistinctValues(products_data, "product_category"),
+                gender: await getDistinctValues(products_data, "gender"),
+                shoesSizes: [...await getDistinctValues(product_variants, "shoes_sizes")]
                     .sort((a, b) => { return a - b }),
-                apparelSizes: [... await product_variants.distinct("apparel_sizes")]
+                apparelSizes: [... await getDistinctValues(product_variants, "apparel_sizes")]
             }
 
             res.json(filterOptions)
-
         }
     },
 
@@ -344,6 +368,37 @@ const productController = {
             // }
 
             // res.json(toSort)
+
+            // -------------------FILTER TEST LEGACY CODE---------------------------
+
+            // const { variant_size, user_category, ...rest } = req.query
+
+            // let varData = {
+            //     variant_size: variant_size
+            // }
+
+            // const varRes = await product_variants.find(varData)
+
+            // let varIdRef = []
+
+            // for (results of varRes) {
+            //     varIdRef.push(results._id)
+            // }
+
+            // if (!varIdRef.length) {
+            //     const varResUpdated = await products_data.find(
+            //         rest
+            //     ).populate("variants")
+            //     res.json(varResUpdated)
+            // } else {
+            //     const res2 = await products_data.find({
+            //         $and: [rest, { variants: { $in: varIdRef } },
+            //         ]
+            //     }
+            //     ).populate("variants")
+            //     console.log(res2)
+            //     res.json(res2)
+            // }
         }
     },
 

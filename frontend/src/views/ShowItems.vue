@@ -6,7 +6,7 @@
           <h3>Filters</h3>
         </div>
         <div v-for="(filters, index) of filterArray" :key="index">
-          <button @click="removeElem(index)">
+          <button @click="removeElem(index), getFilterResponse()">
             {{ filters.split("=")[1] }} X
           </button>
         </div>
@@ -88,7 +88,7 @@
             <input
               type="checkbox"
               id="sizes"
-              :value="`variant_size=${sizes}`"
+              :value="`shoes_sizes=${sizes}`"
               v-model="filterArray"
               @change="getFilterResponse"
             />
@@ -108,7 +108,7 @@
             <input
               type="checkbox"
               id="sizes"
-              :value="`variant_size=${sizes}`"
+              :value="`apparel_sizes=${sizes}`"
               v-model="filterArray"
               @change="getFilterResponse"
             />
@@ -124,7 +124,7 @@
 
     <div class="product_area">
       <div class="header">
-        <h1>All Products ({{ items.products.length }} Results)</h1>
+        <h1>All Products ({{ items.products.length }} Hanichus)</h1>
       </div>
 
       <hr />
