@@ -7,11 +7,10 @@
         </div>
         <div v-for="(filters, index) of filterArray" :key="index">
           <button @click="removeElem(index), getFilterResponse()">
-            {{ filters.split("=")[1] }} X
+            {{ filters.split("=")[1].split(" ")[0] }} X
           </button>
         </div>
         <!-------------------PRODUCT TYPE------------------------>
-
         <div class="collapsible">Type +</div>
 
         <div
@@ -45,21 +44,6 @@
           {{ res }}
         </div>
 
-        <!-------------------PRODUCT CATEGORY------------------------>
-
-        <div class="collapsible">Category +</div>
-
-        <div v-for="res in filterDatas.category" :key="res">
-          <input
-            type="checkbox"
-            id="category"
-            :value="`product_category=${res}`"
-            v-model="filterArray"
-            @change="getFilterResponse"
-          />
-          {{ res }}
-        </div>
-
         <!-------------------USER GENDER------------------------>
 
         <div class="collapsible">Gender +</div>
@@ -69,6 +53,21 @@
             type="checkbox"
             id="gender"
             :value="`gender=${res}`"
+            v-model="filterArray"
+            @change="getFilterResponse"
+          />
+          {{ res }}
+        </div>
+
+        <!-------------------SHOES CATEGORY------------------------>
+
+        <div class="collapsible">Shoes Category +</div>
+
+        <div v-for="res in filterDatas.shoesCat" :key="res">
+          <input
+            type="checkbox"
+            id="category"
+            :value="`product_category=${res}`"
             v-model="filterArray"
             @change="getFilterResponse"
           />
@@ -95,6 +94,22 @@
             US {{ sizes }}
           </div>
         </div>
+
+        <!-------------------APPARELS CATEGORY------------------------>
+
+        <div class="collapsible">Apparels Category +</div>
+
+        <div v-for="res in filterDatas.apparelsCat" :key="res">
+          <input
+            type="checkbox"
+            id="category"
+            :value="`product_category=${res}`"
+            v-model="filterArray"
+            @change="getFilterResponse"
+          />
+          {{ res }}
+        </div>
+
         <!-------------------APPAREL SIZES------------------------>
 
         <div class="collapsible">Apparel Sizes +</div>

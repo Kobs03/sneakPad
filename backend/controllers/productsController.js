@@ -1,15 +1,7 @@
 const { products_data } = require('../models/productModel')
 const { product_variants } = require('../models/variantModel')
 const { uploadFromBuffer, deleteUpload } = require('../cloudinary')
-
-const getDistinctValues = async (model, field) => {
-    try {
-        return await model.distinct(field);
-    } catch (error) {
-        console.error(`Error fetching distinct values for ${field}: ${error.message}`);
-        throw error;
-    }
-};
+const { getDistinctValues, searchedDataCount } = require('../controllers/helper')
 
 const productController = {
 
@@ -19,8 +11,6 @@ const productController = {
             const { product_type, product_brand, product_category, gender, shoes_sizes, apparel_sizes } = req.query
 
             const filter = {}
-            const refIds = {
-            }
 
             if (product_type) {
                 filter.product_type = product_type
@@ -61,9 +51,6 @@ const productController = {
 
             const allProducts = await products_data.find(filter).populate('variants');
 
-            console.log(filter)
-            console.log(variantResults)
-            console.log("TOTAL RESULTS : " + variantResults.length)
             res.json(allProducts)
 
         }
@@ -118,16 +105,34 @@ const productController = {
     filterOptions() {
         return async (req, res) => {
 
-            const filterOptions = {
+            const filterOptions =
+            {
                 types: await getDistinctValues(products_data, "product_type"),
                 brands: await getDistinctValues(products_data, "product_brand"),
-                category: await getDistinctValues(products_data, "product_category"),
+                shoesCat: await products_data.find({ product_type: "Shoes" }).distinct('product_category'),
+                apparelsCat: await products_data.find({ product_type: "Apparels" }).distinct('product_category'),
                 gender: await getDistinctValues(products_data, "gender"),
                 shoesSizes: [...await getDistinctValues(product_variants, "shoes_sizes")]
                     .sort((a, b) => { return a - b }),
                 apparelSizes: [... await getDistinctValues(product_variants, "apparel_sizes")]
             }
 
+            // const typesRes = []
+            // const brandRes = []
+
+            // for (const data of filterOptions.types) {
+            //     count = await searchedDataCount(products_data, "product_type", data)
+            //     typesRes.push(`${data} (${count})`)
+            //     filterOptions.types = typesRes
+            // }
+
+            // for (const data of filterOptions.brands) {
+            //     count = await searchedDataCount(products_data, "product_brand", data)
+            //     brandRes.push(`${data} (${count})`)
+            //     filterOptions.brands = brandRes
+            // }
+
+            // console.log(filterOptions)
             res.json(filterOptions)
         }
     },

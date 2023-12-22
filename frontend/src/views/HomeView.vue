@@ -8,14 +8,11 @@
   <br />
 
   <div v-for="items in items.products" :key="items">
-    <div><input type="checkbox" />{{ items.product_brand }}</div>
+    <hr />
+    <div>{{ items }}</div>
+    <hr />
   </div>
 
-  <br />
-
-  Filter result: {{ items.products }}
-
-  <br />
   <br />
 
   <button @click.prevent="filterData">filter</button><br /><br />
