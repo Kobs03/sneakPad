@@ -1,5 +1,5 @@
 <template>
-  <div class="topnav">
+  <!-- <div class="topnav">
     <div class="logo">
       <router-link to="/"> <h1>Sneak Pad</h1></router-link>
     </div>
@@ -10,7 +10,8 @@
       <input type="text" placeholder="Search.." />
       <router-link to="">Cart</router-link>
     </div>
-  </div>
+  </div> -->
+
   <RouterView />
 </template>
 

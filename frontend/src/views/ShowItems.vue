@@ -131,7 +131,6 @@
           </div>
         </div>
         <br />
-        <button @click.prevent="getFilterResponse">TEST</button>
       </div>
     </div>
 
@@ -143,10 +142,14 @@
       </div>
 
       <hr />
-      <div class="products_container">
+      <div class="products_container row">
         <div class="card" v-for="item in items.products" :key="item">
           <div class="images" v-if="item.product_img.length">
-            <img src="../assets/images/hanichu.jpg" alt="product image" />
+            <img
+              class="img-fluid"
+              src="../assets/images/hanichu.jpg"
+              alt="product image"
+            />
           </div>
 
           <div class="images" v-else>

@@ -4,6 +4,7 @@ import AddListingView from '../views/AddItems.vue'
 import ShowProducts from '../views/ShowItems.vue'
 import getProduct from '../views/ProductView.vue'
 import editProduct from '../views/EditItem.vue'
+import cmsAdmin from '../views/CMS_Admin.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -48,6 +49,14 @@ const router = createRouter({
       name: 'editProduct',
       component: editProduct
     },
+
+    // CMS Admin
+
+    {
+      path: '/Admin',
+      name: 'cmsAdmin',
+      component: cmsAdmin
+    }
 
   ]
 })
